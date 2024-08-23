@@ -1,12 +1,12 @@
 const express=require('express');
 const router=express.Router();
-const {registerUser}=require('../controllers/userController');
+const {signUp}=require('../controllers/userController');
 const {ErrorHandler}=require('../utils/errorHandler');
 const constant=require('../utils/constant');
 
-router.post('/signUp', async(req,res,next)=>{
+router.post('/signUp', async(req,res)=>{
     try{
-        const response=await registerUser(req.body);
+        const response=await signUp(req.body);
         if(response instanceof Error){
             ErrorHandler.sendError(res, response);
         } else{
@@ -16,8 +16,8 @@ router.post('/signUp', async(req,res,next)=>{
             })
         }
     } catch(error){   
-        const registerUserError=ErrorHandler.createError(constant.INTERNAL_SERVER_ERROR, 500);
-        ErrorHandler.sendError(res, registerUserError);
+        const signUpError=ErrorHandler.createError(constant.INTERNAL_SERVER_ERROR, 500);
+        ErrorHandler.sendError(res, signUpError);
     }
 })
 

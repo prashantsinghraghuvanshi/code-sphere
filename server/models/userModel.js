@@ -1,7 +1,7 @@
 const db=require('../config/db');
 const bcrypt=require('bcrypt');
 
-const addUser=async(body)=>{
+const signUpUser=async(body)=>{
     let response={
         isSuccessful: false,
         userAdded: null,
@@ -13,8 +13,6 @@ const addUser=async(body)=>{
             `INSERT INTO users (username, email, password) VALUES (?, ?, ?)`,
             [body.username, body.email, hashPassword]
           );
-        console.log('result', result);
-        
 
         if(result.affectedRows>0){
             response.isSuccessful=true;
@@ -26,6 +24,8 @@ const addUser=async(body)=>{
     return response;
 }
 
+
+
 module.exports={
-    addUser
+    signUpUser
 }

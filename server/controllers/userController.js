@@ -4,7 +4,6 @@ const userModel=require('../models/userModel');
 
 const signUp=async(body)=>{
     try {
-        console.log(body);
         const {username, email, password}=body;
         if(!email){
             const missingEmailError=ErrorHandler.createError(
@@ -35,8 +34,8 @@ const signUp=async(body)=>{
             return missingPasswordError;
         }
 
-        const addUser=await userModel.addUser(body);
-        if(!addUser.isSuccessful){
+        const signUpUser=await userModel.signUpUser(body);
+        if(!signUpUser.isSuccessful){
             const failedToAddUserError=ErrorHandler.createError(
                 addUser.errorMessage,
                 200
@@ -44,15 +43,15 @@ const signUp=async(body)=>{
             return failedToAddUserError;
         }
 
-        const data=addUser.userAdded;
-        return data;
+        // const data=userModel.signUpUser;
+        // return data;
+        return signUpUser;
     } catch (error) {
-        const failedToRegisterUser=ErrorHandler.createError(
-            'Failed to register user',
+        const failedToSignUp=ErrorHandler.createError(
+            'Failed to sign-up user',
             200
         )
-        console.log(`failedToRegisterUser`,error);
-        return failedToRegisterUser;
+        return failedToSignUp;
     }
 }
 

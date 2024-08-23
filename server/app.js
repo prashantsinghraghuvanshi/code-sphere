@@ -11,14 +11,17 @@ const port = process.env.SERVER_PORT || 5001;
 app.use(bodyParser.json());
 
 const userRouter=require('./routes/userRoute.js');
+const authRouter=require('./routes/authRoute.js');
 
 app.use('/api/user', userRouter);
+app.use('/api/auth', authRouter);
 
 app.use(function(req,res,next){
     next(createError(404));
 })
 
 require('./config/db.js');
+
 app.listen(port, ()=>{
     console.log(`Server is running at port : ${port}`);
 });

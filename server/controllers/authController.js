@@ -18,6 +18,13 @@ const signIn=async(body)=>{
             return missingPasswordError;
         }
         const data=await authModel.signInUser(body);
+        if(!data.isSuccessful){
+            const missingPasswordError=ErrorHandler.createError(
+                data.errorMessage,
+                400
+            )
+            return missingPasswordError;
+        }
         return data;
     } catch (error) {
         const failedToSignIn=ErrorHandler.createError(
@@ -28,6 +35,18 @@ const signIn=async(body)=>{
     }
 }
 
+const otpController=async(req,res)=>{
+    const {username, otp}=req.body;
+
+    if(!username || !otp){
+        return res.status(400).json({success: false, error:'User ID and OTP are required'});
+    }
+
+    const response=await authModel.verifyOTP(username, otp);
+    res.status(response.isSuccessful?200:401).json(response);
+}
+
 module.exports={
-    signIn
+    signIn,
+    otpController
 }

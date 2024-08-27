@@ -36,13 +36,13 @@ const signIn=async(body)=>{
 }
 
 const otpController=async(req,res)=>{
-    const {username, otp}=req.body;
+    const {user_id, otp}=req.body;
 
-    if(!username || !otp){
+    if(!user_id || !otp){
         return res.status(400).json({success: false, error:'User ID and OTP are required'});
     }
 
-    const response=await authModel.verifyOTP(username, otp);
+    const response=await authModel.verifyOTP(user_id, otp);
     res.status(response.isSuccessful?200:401).json(response);
 }
 

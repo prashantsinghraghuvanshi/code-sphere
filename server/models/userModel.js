@@ -14,8 +14,12 @@ const signUpUser=async(body)=>{
             `INSERT INTO users (username, email, password) VALUES (?, ?, ?)`,
             [body.username, body.email, hashPassword]
           );
+        const [roleResult]=await db.query(
+            'INSERT INTO user_roles(user_id) VALUES (?)',
+            [result.insertId]
+        )
 
-        if(result.affectedRows>0){
+        if(result.affectedRows>0 && roleResult.affectedRows>0){
             response.isSuccessful=true;
             response.userAdded="user added successfully";
         }

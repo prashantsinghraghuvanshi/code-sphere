@@ -25,7 +25,8 @@ const signInUser=async(body)=>{
         }
 
         // otp
-        const otp=await sendOTP(body.username);
+        const user_id=result[0].user_id;
+        const otp=await sendOTP(user_id);
         response.isSuccessful=true;
         response.message='OTP is sent...';
         response.otp=otp;
@@ -37,16 +38,16 @@ const signInUser=async(body)=>{
     return response;
 }
 
-const verifyOTP=async(username,otp)=>{
+const verifyOTP=async(user_id,otp)=>{
     let response={
         isSuccessful: false,
         errorMessage: null
     }
     
     try {
-        const query=`SELECT otp_id, expired_at FROM otpRecord WHERE username=? AND otp=? ORDER BY created_at DESC LIMIT 1`;
+        const query=`SELECT otp_id, expired_at FROM otpRecord WHERE user_id=? AND otp=? ORDER BY created_at DESC LIMIT 1`;
 
-        const [rows]=await db.execute(query, [username, otp]);
+        const [rows]=await db.execute(query, [user_id, otp]);
 
         if(rows.length===0){
             response.errorMessage='Invalid OTP';
@@ -62,11 +63,19 @@ const verifyOTP=async(username,otp)=>{
         }
 
         response.isSuccessful=true;
+        
+        const userId = otpRecord.user_id;
+
+        const [logIn] = await db.query(`UPDATE users SET isLoggedIn = true WHERE user_id = ?`,[userId]);
+
+        if(logIn.affectedRows<0){
+            response.errorMessage='cant log in user';
+            return response;
+        }
 
     } catch (error) {
         response.errorMessage=error.message;
     }
-
     return response;
 }
 

@@ -25,8 +25,8 @@ router.post('/signIn', async(req,res)=>{
 
 router.post('/verifyOtp', async(req,res)=>{
     try {
-        const {username, otp}=req.body;
-        const response=await verifyOTP(username, otp);
+        const {user_id, otp}=req.body;
+        const response=await verifyOTP(user_id, otp);
         if(response instanceof Error){
             ErrorHandler.sendError(res, response);
         } else{

@@ -29,31 +29,6 @@ const signUpUser=async(body)=>{
     return response;
 }
 
-const postQuestion=async(title, content, createdBy)=>{
-    let response={
-        isSuccessful: false,
-        questionPosted: null,
-    };
-    try {
-        const [result]=await db.query(
-            `INSERT INTO queries (title, content, created_by) VALUES (?, ?, ?)`,
-            [title, content, createdBy]
-        )
-        if(result.affectedRows>0){
-            response.isSuccessful= true;
-            response.questionPosted= title;
-        }
-    } catch (error) {
-        const postQuesError=ErrorHandler.createError(
-            'Error in inserting the question into database',
-            500
-        )
-        return postQuesError;
-    }
-    return response;
-}
-
 module.exports={
-    signUpUser,
-    postQuestion
+    signUpUser
 }

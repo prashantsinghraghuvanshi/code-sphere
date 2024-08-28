@@ -1,6 +1,6 @@
 const db=require('../config/db');
 const bcrypt=require('bcrypt');
-const {sendOTP}=require('./otpService');
+const {sendOTP}=require('../utils/otpService');
 
 const signInUser=async(body)=>{
     let response={
@@ -63,10 +63,8 @@ const verifyOTP=async(user_id,otp)=>{
         }
 
         response.isSuccessful=true;
-        
-        const userId = otpRecord.user_id;
 
-        const [logIn] = await db.query(`UPDATE users SET isLoggedIn = true WHERE user_id = ?`,[userId]);
+        const [logIn] = await db.execute(`UPDATE users SET isLoggedIn = true WHERE user_id = ?`,[user_id]);
 
         if(logIn.affectedRows<0){
             response.errorMessage='cant log in user';
@@ -79,7 +77,29 @@ const verifyOTP=async(user_id,otp)=>{
     return response;
 }
 
+const signOutUser=async(user_id)=>{
+    let response={
+        isSuccessful: false,
+        errorMessage: null
+    }
+
+    try {
+        const [result]=await db.execute(`UPDATE users SET isLoggedIn = false WHERE user_id = ?`,[user_id])
+        if(result.affectedRows<0){
+            response.errorMessage='cant logout user';
+            return response;
+        }
+
+        response.isSuccessful=true;        
+    } catch (error) {
+        response.errorMessage=error.message;
+    }
+
+    return response;
+}
+
 module.exports={
     signInUser,
-    verifyOTP
+    verifyOTP,
+    signOutUser
 }

@@ -1,5 +1,4 @@
 const db=require('../config/db');
-const crypto=require('crypto');
 
 function generateOtp(){
     return Math.floor(1000+Math.random()*9000).toString();

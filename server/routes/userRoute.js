@@ -21,22 +21,4 @@ router.post('/signUp', async(req,res)=>{
     }
 })
 
-router.post('/postQuestion', async(req,res)=>{
-    try {
-        const {title, content, createdBy}=req.body;
-        const response=await postQuestion(title, content, createdBy);
-        if (response instanceof Error) {
-            ErrorHandler.sendError(res, response);
-        } else {
-            res.status(200).send({
-                success: true,
-                message: response.message,
-            })
-        }
-    } catch (error) {
-        const postQuesError=ErrorHandler.createError(constant.INTERNAL_SERVER_ERROR, 500);
-        ErrorHandler.sendError(res, postQuesError);
-    }
-})
-
 module.exports= router;

@@ -5,23 +5,23 @@ const { ErrorHandler } = require('../utils/errorHandler');
 const signUpUser=async(body)=>{
     let response={
         isSuccessful: false,
-        userAdded: null,
+        message: null,
     };
 
     try {
         const hashPassword=await bcrypt.hash(body.password, 8);
-        const [result] = await db.query(
+        const [UserResult] = await db.query(
             `INSERT INTO users (username, email, password) VALUES (?, ?, ?)`,
             [body.username, body.email, hashPassword]
           );
         const [roleResult]=await db.query(
             'INSERT INTO user_roles(user_id) VALUES (?)',
-            [result.insertId]
+            [UserResult.insertId]
         )
 
-        if(result.affectedRows>0 && roleResult.affectedRows>0){
+        if(UserResult.affectedRows>0 && roleResult.affectedRows>0){
             response.isSuccessful=true;
-            response.userAdded="user added successfully";
+            response.message="user added successfully";
         }
     } catch (error) {
         response.errorMessage=error.message;

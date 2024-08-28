@@ -12,11 +12,11 @@ app.use(bodyParser.json());
 
 const userRouter=require('./routes/userRoute.js');
 const authRouter=require('./routes/authRoute.js');
-// const adminRouter=require('./routes/adminRouter.js');
+const adminRouter=require('./routes/adminRoute.js');
 
 app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter);
-// app.use('/api/admin',adminRouter);
+app.use('/api/admin', adminRouter);
 
 app.use(function(req,res,next){
     next(createError(404));

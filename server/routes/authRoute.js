@@ -1,6 +1,6 @@
 const express=require('express');
 const router=express.Router();
-const {signIn}=require('../controllers/authController');
+const {signIn, signOut}=require('../controllers/authController');
 const {ErrorHandler}=require('../utils/errorHandler');
 const constant=require('../utils/constant');
 const { verifyOTP } = require('../models/authModel');
@@ -38,6 +38,24 @@ router.post('/verifyOtp', async(req,res)=>{
     } catch (error) {
         const verifyOtpError=ErrorHandler.createError(constant.INTERNAL_SERVER_ERROR, 500);
         ErrorHandler.sendError(res, verifyOtpError);
+    }
+})
+
+router.post('/signOut', async(req,res)=>{
+    try {
+        const {user_id}=req.body;
+        const response=await signOut(user_id);
+        if(response instanceof Error){
+            ErrorHandler.sendError(res, response);
+        } else{
+            res.status(200).send({
+                success: true,
+                message: response.message,
+            })
+        }
+    } catch (error) {
+        const signOutError=ErrorHandler.createError(constant.INTERNAL_SERVER_ERROR, 500);
+        ErrorHandler.sendError(res, signOutError);
     }
 })
 

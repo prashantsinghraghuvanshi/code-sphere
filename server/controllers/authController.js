@@ -19,34 +19,82 @@ const signIn=async(body)=>{
         }
         const data=await authModel.signInUser(body);
         if(!data.isSuccessful){
-            const missingPasswordError=ErrorHandler.createError(
+            const missingDataError=ErrorHandler.createError(
                 data.errorMessage,
                 400
             )
-            return missingPasswordError;
+            return missingDataError;
         }
         return data;
     } catch (error) {
         const failedToSignIn=ErrorHandler.createError(
             'Failed to sign-in',
-            200
+            400
         )
         return failedToSignIn;
     }
 }
 
 const otpController=async(req,res)=>{
-    const {user_id, otp}=req.body;
+    try {
+        const {user_id, otp}=req.body;
+        if(!user_id || !otp){
+            return res.status(400).json({success: false, error:'User ID and OTP are required'});
+        }
 
-    if(!user_id || !otp){
-        return res.status(400).json({success: false, error:'User ID and OTP are required'});
+        const response=await authModel.verifyOTP(user_id, otp);
+        if(!response.isSuccessful){
+            const otpFailedError=ErrorHandler.createError(
+                'Failed to generate otp',
+                401
+            )
+            return otpFailedError;
+        } else{
+            res.status(200).json(response);
+        }
+    } catch (error) {
+        const otpFailError=ErrorHandler.createError(
+            'Error in otp generation',
+            401
+        )
+        return otpFailError;
     }
+    // res.status(response.isSuccessful?200:401).json(response);
+}
 
-    const response=await authModel.verifyOTP(user_id, otp);
-    res.status(response.isSuccessful?200:401).json(response);
+const signOut=async(req,res)=>{
+    try {
+        const user_id=req;
+
+        if (!user_id) {
+            const missingUserError = ErrorHandler.createError(
+                'No user found',
+                404
+            );
+            return res.status(404).json({ error: missingUserError.message });
+        }
+
+        const data=await authModel.signOutUser(user_id);
+        if(!data.isSuccessful){
+            const missingDataError=ErrorHandler.createError(
+                data.errorMessage,
+                400
+            )
+            return missingDataError;
+        }
+        return data;
+
+    } catch (error) {
+        const failedToSignOut=ErrorHandler.createError(
+            'Failed to sign-out',
+            200
+        )
+        return failedToSignOut;
+    }
 }
 
 module.exports={
     signIn,
-    otpController
+    otpController,
+    signOut
 }

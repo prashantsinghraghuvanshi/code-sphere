@@ -10,9 +10,9 @@ router.post('/signUp', async(req,res)=>{
         if(response instanceof Error){
             ErrorHandler.sendError(res, response);
         } else{
-            res.status(200).send({
+            res.status(201).send({
                 success: true,
-                message: response.data,
+                message: "new user created",
             })
         }
     } catch(error){   

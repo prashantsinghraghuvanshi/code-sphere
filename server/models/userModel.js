@@ -1,6 +1,5 @@
 const db=require('../config/db');
 const bcrypt=require('bcrypt');
-const { ErrorHandler } = require('../utils/errorHandler');
 
 const signUpUser=async(body)=>{
     let response={
@@ -18,10 +17,16 @@ const signUpUser=async(body)=>{
             'INSERT INTO user_roles(user_id) VALUES (?)',
             [UserResult.insertId]
         )
+        const [otpResult]=await db.query(
+            `INSERT INTO otpRecord(user_id) VALUES (?)`,
+            [UserResult.insertId]
+        )
 
-        if(UserResult.affectedRows>0 && roleResult.affectedRows>0){
+        if(UserResult.affectedRows>0 && roleResult.affectedRows>0 && otpResult.affectedRows>0){
             response.isSuccessful=true;
             response.message="user added successfully";
+        } else {
+            response.errorMessage='error in query section in signUp';
         }
     } catch (error) {
         response.errorMessage=error.message;

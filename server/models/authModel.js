@@ -1,6 +1,6 @@
 const db=require('../config/db');
 const bcrypt=require('bcrypt');
-const {sendOTP}=require('../utils/otpService');
+const {generateOtp}=require('../utils/otpService');
 
 const signInUser=async(body)=>{
     let response={
@@ -11,6 +11,7 @@ const signInUser=async(body)=>{
 
     try {
         const [result]=await db.query(`SELECT user_id, password FROM users WHERE username=?`,[body.username]);
+        const user_id=result[0].user_id;
 
         if(result.length===0){
             response.errorMessage='Invalid username or password';
@@ -25,10 +26,16 @@ const signInUser=async(body)=>{
         }
 
         // otp
-        const user_id=result[0].user_id;
-        const otp=await sendOTP(user_id);
+        const otp=generateOtp();
+        const [query]=`UPDATE otpRecord SET otp=? WHERE user_id=?`;
+
+        await db.execute(query, [otp, user_id]);
+        if(query.affectedRows===0){
+            response.errorMessage='OTP generation failed';
+            return response;
+        }
+        console.log(`OTP Generated : ${otp}`);
         response.isSuccessful=true;
-        response.message='OTP is sent...';
         response.otp=otp;
 
     } catch (error) {

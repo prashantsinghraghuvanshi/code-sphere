@@ -10,7 +10,7 @@ router.post('/question', async(req,res)=>{
         if(response instanceof Error){
             ErrorHandler.sendError(res, response);
         } else {
-            res.status(201).send({
+            res.status(200).send({
                 success: true,
                 message: "question posted successfully"
             })
@@ -27,7 +27,7 @@ router.post('/solution', async(req,res)=>{
         if(response instanceof Error){
             ErrorHandler.sendError(res, response);
         } else {
-            res.status(201).send({
+            res.status(200).send({
                 success: true,
                 message: "solution posted successfully"
             })

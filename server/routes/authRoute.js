@@ -11,9 +11,8 @@ router.post('/signIn', async(req,res)=>{
         if(response instanceof Error){
             ErrorHandler.sendError(res, response);
         } else{
-            res.status(200).send({
+            res.status(202).send({
                 success: true,
-                message: response.message,
                 otp: response.otp
             })
         }

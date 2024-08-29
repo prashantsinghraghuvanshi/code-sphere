@@ -2,7 +2,7 @@ const db=require('../config/db');
 const bcrypt=require('bcrypt');
 const {generateOtp}=require('../utils/otpService');
 
-const signInUser=async(body)=>{
+const signInUser=async(user_id, password)=>{
     let response={
         isSuccessful: false,
         otp: null,
@@ -10,15 +10,14 @@ const signInUser=async(body)=>{
     }
 
     try {
-        const [result]=await db.query(`SELECT user_id, password FROM users WHERE username=?`,[body.username]);
-        const user_id=result[0].user_id;
+        const [result]=await db.query(`SELECT password FROM users WHERE user_id=?`,[user_id]);
 
         if(result.length===0){
             response.errorMessage='Invalid username or password';
             return response;
         }
 
-        const isMatch = await bcrypt.compare(body.password, result[0].password);
+        const isMatch = await bcrypt.compare(password, result[0].password);
 
         if(!isMatch){
             response.errorMessage='Invalid username or password';
@@ -27,13 +26,9 @@ const signInUser=async(body)=>{
 
         // otp
         const otp=generateOtp();
-        const [query]=`UPDATE otpRecord SET otp=? WHERE user_id=?`;
+        const query=`UPDATE otpRecord SET otp=? WHERE user_id=?`;
 
         await db.execute(query, [otp, user_id]);
-        if(query.affectedRows===0){
-            response.errorMessage='OTP generation failed';
-            return response;
-        }
         console.log(`OTP Generated : ${otp}`);
         response.isSuccessful=true;
         response.otp=otp;
@@ -52,31 +47,31 @@ const verifyOTP=async(user_id,otp)=>{
     }
     
     try {
-        const query=`SELECT otp_id, expired_at FROM otpRecord WHERE user_id=? AND otp=? ORDER BY created_at DESC LIMIT 1`;
+        const [query]=await db.execute(`SELECT otp, expired_at FROM otpRecord WHERE user_id=?`,[user_id]);
 
-        const [rows]=await db.execute(query, [user_id, otp]);
-
-        if(rows.length===0){
-            response.errorMessage='Invalid OTP';
+        if(query.length===0){
+            response.errorMessage='No otp record found';
             return response;
         }
 
-        const otpRecord=rows[0];
+        const otpRecord=query[0];
         const currTime=new Date();
 
         if(currTime>otpRecord.expired_at){
             response.errorMessage='OTP expired';
             return response;
         }
-
-        response.isSuccessful=true;
-
+        if(otp!=otpRecord.otp){
+            response.errorMessage='Invalid OTP'
+            return response;
+        }
         const [logIn] = await db.execute(`UPDATE users SET isLoggedIn = true WHERE user_id = ?`,[user_id]);
 
         if(logIn.affectedRows<0){
             response.errorMessage='cant log in user';
             return response;
         }
+        response.isSuccessful=true;
 
     } catch (error) {
         response.errorMessage=error.message;
@@ -92,7 +87,7 @@ const signOutUser=async(user_id)=>{
 
     try {
         const [result]=await db.execute(`UPDATE users SET isLoggedIn = false WHERE user_id = ?`,[user_id])
-        if(result.affectedRows<0){
+        if(result.affectedRows===0){
             response.errorMessage='cant logout user';
             return response;
         }
@@ -105,8 +100,24 @@ const signOutUser=async(user_id)=>{
     return response;
 }
 
+const getUserId=async(username)=>{
+    let user_id=null;
+
+    try {
+        const [query]=await db.execute(`SELECT user_id FROM users WHERE username=?`,[username])
+        if(query[0]){
+            user_id=query[0].user_id;
+            return user_id;
+        }
+        return user_id;
+    } catch (error) {
+        return user_id;
+    }
+}
+
 module.exports={
     signInUser,
     verifyOTP,
-    signOutUser
+    signOutUser,
+    getUserId
 }

@@ -26,8 +26,8 @@ router.post('/verifyOtp', async(req,res)=>{
     try {
         const {user_id, otp}=req.body;
         const response=await verifyOTP(user_id, otp);
-        if(response instanceof Error){
-            ErrorHandler.sendError(res, response);
+        if(response.errorMessage){
+            ErrorHandler.sendError(res, response.errorMessage);
         } else{
             res.status(200).send({
                 success: true,

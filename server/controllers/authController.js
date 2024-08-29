@@ -17,7 +17,17 @@ const signIn=async(body)=>{
             )
             return missingPasswordError;
         }
-        const data=await authModel.signInUser(body);
+
+        const user_id=await authModel.getUserId(username);
+        if(!user_id){
+            const missingUserIdError=ErrorHandler.createError(
+                'no user with particular username is found',
+                400
+            )
+            return missingUserIdError;
+        }
+
+        const data=await authModel.signInUser(user_id, password);
         if(!data.isSuccessful){
             const missingDataError=ErrorHandler.createError(
                 data.errorMessage,

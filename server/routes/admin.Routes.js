@@ -3,8 +3,9 @@ const router=express.Router();
 const {updateRole}=require('../controllers/adminController');
 const {ErrorHandler}=require('../utils/errorHandler');
 const constant=require('../utils/constant');
+const {protectRoute}=require('../middlewares/protectRoutes');
 
-router.post('/updateRole', async(req,res)=>{
+router.post('/updateRole', protectRoute, async(req,res)=>{
     try {
         const response=await updateRole(req.body);
         if(response instanceof Error){

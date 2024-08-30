@@ -1,6 +1,7 @@
 const db=require('../config/db');
 const bcrypt=require('bcrypt');
 const {generateOtp}=require('../utils/otpService');
+const {generateTokenAndSetCookie}=require('../utils/generateToken');
 
 const signInUser=async(user_id, password)=>{
     let response={
@@ -40,7 +41,7 @@ const signInUser=async(user_id, password)=>{
     return response;
 }
 
-const verifyOTP=async(user_id,otp)=>{
+const verifyOTP=async(user_id,otp,res)=>{
     let response={
         isSuccessful: false,
         errorMessage: null
@@ -72,7 +73,7 @@ const verifyOTP=async(user_id,otp)=>{
             return response;
         }
         response.isSuccessful=true;
-
+        generateTokenAndSetCookie(user_id,res);
     } catch (error) {
         response.errorMessage=error.message;
     }

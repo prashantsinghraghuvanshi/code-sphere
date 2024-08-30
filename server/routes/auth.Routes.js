@@ -25,7 +25,7 @@ router.post('/signIn', async(req,res)=>{
 router.post('/verifyOtp', async(req,res)=>{
     try {
         const {user_id, otp}=req.body;
-        const response=await verifyOTP(user_id, otp);
+        const response=await verifyOTP(user_id, otp, res);
         if(response.errorMessage){
             ErrorHandler.sendError(res, response.errorMessage);
         } else{
@@ -44,7 +44,7 @@ router.post('/signOut', async(req,res)=>{
     try {
         const {user_id}=req.body;
         const response=await signOut(user_id);
-        if(response instanceof Error){
+        if(response.errorMessage){
             ErrorHandler.sendError(res, response);
         } else{
             res.status(200).send({

@@ -1,61 +1,23 @@
-const ErrorHandler=require('../utils/errorHandler');
 const adminModel=require('../models/adminModel');
 
-const updateRole=async(body)=>{
+const updateRole=async(req, res)=>{
     try {
-        const verifier=await verifyUserStatus(body);
-        if(verifier instanceof Error){
-            ErrorHandler.sendError(res,verifier)
+        const role=req.roleUser;
+        if(role!=='admin'){
+            return res.status(401).json({error : "unauthorized user"});
         }
-
-        const {user_id, role_id, admin_id}=body;
+        const {user_id, role_id, admin_id}=req.body;
         if(!user_id || !role_id || !admin_id){
-            const missingDataError=ErrorHandler.createError(
-                'missing entry',
-                401
-            )
-            return missingDataError;
+            return res.status(400).json({error : "missing data in request"})
         }
         const data=await adminModel.updateUserRole(user_id, role_id, admin_id);
         if(!data.isSuccessful){
-            const failedUpdation=ErrorHandler.createError(
-                data.errorMessage,
-                401
-            )
-            return failedUpdation;
+            return res.status(500).json({error: "internal server error"})
         }
-    } catch (error) {
-        const failedToUpdate=ErrorHandler.createError(
-            'Failed to update user role',
-            400
-        )
-        return failedToUpdate;
-    }
-}
 
-const verifyUserStatus=async(body)=>{
-    try {
-        const {admin_id}=body;
-        if(!admin_id){
-            const missingDataError=ErrorHandler.createError(
-                "admin_id field is required",
-                400
-            )
-            return missingDataError;
-        }
-        const data= await adminModel.verifyUserRole(admin_id);
-        if(!data.verified){
-            const unauthorizedError=ErrorHandler.sendError(
-                "Unauthorized User",
-                401
-            )
-            return unauthorizedError;
-        }
+        res.status(202).json({message : "user role updated successfully"})
     } catch (error) {
-        const failedToVerify=ErrorHandler.createError(
-            "failed to verify the role of user",
-            500
-        )
+        return res.status(500).json({error: "internal server error"});
     }
 }
 

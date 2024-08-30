@@ -40,11 +40,11 @@ const findById=async(user_id)=>{
     }
     try {
         const [result]=await db.execute("SELECT role_id FROM user_roles WHERE user_id=?",[user_id]);
-        if(result.affectedRows===0){
+        if(result.length===0){
             return response;
         }
-        const [role]=await db.execute("SELECT role_name FROM roles WHERE role_id=?",[result[0].user_id]);
-        if(role.affectedRows===0){
+        const [role]=await db.execute("SELECT role_name FROM roles WHERE role_id=?",[result[0].role_id]);
+        if(role.length===0){
             return response;
         }
         const rolename=role[0].role_name;

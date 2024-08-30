@@ -3,12 +3,14 @@ const express=require('express');
 const path=require('path');
 const dotenv=require('dotenv');
 const bodyParser = require('body-parser');
+const cookieParser=require('cookie-parser');
 
 dotenv.config({path : path.resolve(__dirname, '.env')});
 const app=express();
 const port = process.env.SERVER_PORT || 5001;
 
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 const userRouter=require('./routes/user.Routes.js');
 const authRouter=require('./routes/auth.Routes.js');

@@ -10,10 +10,10 @@ const port = process.env.SERVER_PORT || 5001;
 
 app.use(bodyParser.json());
 
-const userRouter=require('./routes/userRoute.js');
-const authRouter=require('./routes/authRoute.js');
-const adminRouter=require('./routes/adminRoute.js');
-const postRouter=require('./routes/postRoute.js')
+const userRouter=require('./routes/user.Routes.js');
+const authRouter=require('./routes/auth.Routes.js');
+const adminRouter=require('./routes/admin.Routes.js');
+const postRouter=require('./routes/post.Routes.js')
 
 app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter);

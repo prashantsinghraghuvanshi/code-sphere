@@ -2,56 +2,26 @@ const validator=require('email-validator');
 const {ErrorHandler}=require('../utils/errorHandler');
 const userModel=require('../models/userModel');
 
-const signUp=async(body)=>{
+const signUp=async(req, res)=>{
     try {
-        const {username, email, password}=body;
-        if(!email){
-            const missingEmailError=ErrorHandler.createError(
-                'please provide email address',
-                400
-            )
-            return missingEmailError;
+        const {username, email, password}=req.body;
+        if(!email || !username || !password){
+            return res.status(400).json({error:'missing required fields in request'})
         }
         const emailIsValid=validator.validate(email);
         if(!emailIsValid){
-            const validEmailError=ErrorHandler.createError(
-                'please provide valid email',
-                400
-            )
-            return validEmailError;
-        }
-        if(!username){
-            const missingUsernameError=ErrorHandler.createError(
-                'please provide an username'
-            )
-            return missingUsernameError;
-        }
-        if(!password){
-            const missingPasswordError=ErrorHandler.createError(
-                'please provide password',
-                400
-            )
-            return missingPasswordError;
+            return res.status(400).json({error:'email is not valid'})
         }
 
         const signUpUser=await userModel.signUpUser(body);
         if(!signUpUser.isSuccessful){
-            const failedToAddUserError=ErrorHandler.createError(
-                addUser.errorMessage,
-                200
-            )
-            return failedToAddUserError;
+            return res.status(500).json({error:'internal server error'})
         }
 
-        // const data=userModel.signUpUser;
-        // return data;
-        return signUpUser;
+        return res.status(201).json({message:'user created successfully'});
+
     } catch (error) {
-        const failedToSignUp=ErrorHandler.createError(
-            'Failed to sign-up user',
-            400
-        )
-        return failedToSignUp;
+        return res.status(500).json({error:error.message})
     }
 }
 

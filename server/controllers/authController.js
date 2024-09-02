@@ -1,47 +1,27 @@
 const {ErrorHandler}=require('../utils/errorHandler');
 const authModel=require('../models/authModel');
 
-const signIn=async(body)=>{
+const signIn=async(req, res)=>{
     try {
-        const {username, password}=body;
-        if(!username){
-            const missingUsernameError=ErrorHandler.createError(
-                'please provide an username'
-            )
-            return missingUsernameError;
-        }
-        if(!password){
-            const missingPasswordError=ErrorHandler.createError(
-                'please provide password',
-                400
-            )
-            return missingPasswordError;
+        const {username, password}=req.body;
+        if(!username || !password){
+            return res.status(400).json({error:'missing username or password'})
         }
 
         const user_id=await authModel.getUserId(username);
         if(!user_id){
-            const missingUserIdError=ErrorHandler.createError(
-                'no user with particular username is found',
-                400
-            )
-            return missingUserIdError;
+            return res.status(500).json({error:'not able fetch user id'})
         }
 
         const data=await authModel.signInUser(user_id, password);
         if(!data.isSuccessful){
-            const missingDataError=ErrorHandler.createError(
-                data.errorMessage,
-                400
-            )
-            return missingDataError;
+            return res.status(500).json({error:'internal server error'})    
         }
-        return data;
+
+        return res.status(202).json({message: 'sign in successful'});
+
     } catch (error) {
-        const failedToSignIn=ErrorHandler.createError(
-            'Failed to sign-in',
-            400
-        )
-        return failedToSignIn;
+        return res.status(500).json({error: error.message})
     }
 }
 
@@ -54,22 +34,13 @@ const otpController=async(req,res)=>{
 
         const response=await authModel.verifyOTP(user_id, otp);
         if(!response.isSuccessful){
-            const otpFailedError=ErrorHandler.createError(
-                'Failed to generate otp',
-                401
-            )
-            return otpFailedError;
+            return res.status(500).json({error: 'internal server error'});
         } else{
-            res.status(200).json(response);
+            return res.status(200).json(response);
         }
     } catch (error) {
-        const otpFailError=ErrorHandler.createError(
-            'Error in otp generation',
-            401
-        )
-        return otpFailError;
+        return res.status(500).json({error: error.message});
     }
-    // res.status(response.isSuccessful?200:401).json(response);
 }
 
 const signOut=async(req,res)=>{
@@ -77,29 +48,18 @@ const signOut=async(req,res)=>{
         const user_id=req;
 
         if (!user_id) {
-            const missingUserError = ErrorHandler.createError(
-                'No user found',
-                404
-            );
-            return res.status(404).json({ error: missingUserError.message });
+            return res.status(400).json({ error: 'no active user found' });
         }
 
         const data=await authModel.signOutUser(user_id);
         if(!data.isSuccessful){
-            const missingDataError=ErrorHandler.createError(
-                data.errorMessage,
-                400
-            )
-            return missingDataError;
+            return res.status(500).json({error: 'internal server error'})
         }
-        return data;
+
+        return res.status(200).json({message: 'user logged out'});
 
     } catch (error) {
-        const failedToSignOut=ErrorHandler.createError(
-            'Failed to sign-out',
-            200
-        )
-        return failedToSignOut;
+        return res.status(500).json({error: error.message})
     }
 }
 

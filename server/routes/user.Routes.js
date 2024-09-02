@@ -1,24 +1,7 @@
 const express=require('express');
 const router=express.Router();
-const {signUp, postQuestion}=require('../controllers/userController');
-const {ErrorHandler}=require('../utils/errorHandler');
-const constant=require('../utils/constant');
+const {signUp}=require('../controllers/userController');
 
-router.post('/signUp', async(req,res)=>{
-    try{
-        const response=await signUp(req.body);
-        if(response instanceof Error){
-            ErrorHandler.sendError(res, response);
-        } else{
-            res.status(201).send({
-                success: true,
-                message: "new user created",
-            })
-        }
-    } catch(error){   
-        const signUpError=ErrorHandler.createError(constant.INTERNAL_SERVER_ERROR, 500);
-        ErrorHandler.sendError(res, signUpError);
-    }
-})
+router.post('/signUp', signUp)
 
 module.exports= router;

@@ -16,11 +16,13 @@ const userRouter=require('./routes/user.Routes.js');
 const authRouter=require('./routes/auth.Routes.js');
 const adminRouter=require('./routes/admin.Routes.js');
 const postRouter=require('./routes/post.Routes.js');
+const dataRouter=require('./routes/data.Routes.js');
 
 app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/post', postRouter);
+app.use('/api/data', dataRouter);
 
 app.use(function(req,res,next){
     next(createError(404));

@@ -6,15 +6,20 @@ const updateUserRole=async(user_id, role_id, admin_id)=>{
         errorMessage: null
     }
     try {
-        const [query]=await db.execute(`UPDATE user_roles SET role_id=?, updated_by=? WHERE user_id=?`,[role_id, admin_id, user_id]);
-        if(query.length===0){
+        const [result]=await db.execute(`CALL update_user_role(?,?,?)`,[role_id, admin_id, user_id]);
+
+        if(result.affectedRows===0){
             response.errorMessage='cant update user role!';
-            return response;
         } else {
             response.isSuccessful=true;
         }
+
     } catch (error) {
-        response.errorMessage=error.message;
+        if(error.code==='ER_SIGNAL_EXCEPTION'){
+            response.errorMessage=error.sqlMessage || 'An error occured in updating user role table';
+        } else {
+            response.errorMessage=error.message || 'Unexpected error occured while updating user role';
+        }
     }
     return response;
 }

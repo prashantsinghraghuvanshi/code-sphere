@@ -1,4 +1,3 @@
-const {ErrorHandler}=require('../utils/errorHandler');
 const authModel=require('../models/authModel');
 
 const signIn=async(req, res)=>{
@@ -14,11 +13,12 @@ const signIn=async(req, res)=>{
         }
 
         const data=await authModel.signInUser(user_id, password);
+
         if(!data.isSuccessful){
-            return res.status(500).json({error:'internal server error'})    
+            return res.status(500).json({isSuccessful: data.isSuccessful, error: data.errorMessage});    
         }
 
-        return res.status(202).json({message: 'sign in successful'});
+        return res.status(202).json({isAccepted: data.isSuccessful, otp: data.otp});
 
     } catch (error) {
         return res.status(500).json({error: error.message})
@@ -34,7 +34,7 @@ const otpController=async(req,res)=>{
 
         const response=await authModel.verifyOTP(user_id, otp);
         if(!response.isSuccessful){
-            return res.status(500).json({error: 'internal server error'});
+            return res.status(500).json({success: false, error: response.errorMessage});
         } else{
             return res.status(200).json(response);
         }

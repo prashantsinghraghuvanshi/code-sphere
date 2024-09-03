@@ -1,5 +1,4 @@
 const validator=require('email-validator');
-const {ErrorHandler}=require('../utils/errorHandler');
 const userModel=require('../models/userModel');
 
 const signUp=async(req, res)=>{
@@ -13,9 +12,10 @@ const signUp=async(req, res)=>{
             return res.status(400).json({error:'email is not valid'})
         }
 
-        const signUpUser=await userModel.signUpUser(body);
+        const signUpUser=await userModel.signUpUser(req.body);
+        
         if(!signUpUser.isSuccessful){
-            return res.status(500).json({error:'internal server error'})
+            return res.status(500).json({error: signUpUser.errorMessage})
         }
 
         return res.status(201).json({message:'user created successfully'});

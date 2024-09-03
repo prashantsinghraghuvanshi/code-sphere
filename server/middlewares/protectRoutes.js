@@ -18,7 +18,7 @@ const protectRoute=async(req,res,next)=>{
             return res.status(404).json({error: "User not found"});
         }
         
-        req.roleUser=user.role;
+        req.rolename=user.rolename;
         next();
     } catch (error) {
         res.status(500).json({error: "Internal server error"});

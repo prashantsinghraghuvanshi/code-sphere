@@ -1,5 +1,4 @@
 const mysql=require('mysql2/promise');
-const {ErrorHandler}=require('../utils/errorHandler');
 const connection=mysql.createPool({
     port: process.env.sqlPORT,
     host: process.env.sqlHOST,
@@ -13,12 +12,8 @@ const connection=mysql.createPool({
 
 connection.getConnection((error, connection)=>{
     if(error){
-        const internalServerError=ErrorHandler.createError(
-            'Internal server error, please try again later',
-            500
-        );
         console.log(internalServerError.message);
-        return;
+        return error.message;
     }
 
     if(connection)  connection.release();

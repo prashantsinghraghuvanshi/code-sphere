@@ -9,24 +9,13 @@ const signUpUser=async(body)=>{
 
     try {
         const hashPassword=await bcrypt.hash(body.password, 8);
-        const [UserResult] = await db.query(
-            `INSERT INTO users (username, email, password) VALUES (?, ?, ?)`,
-            [body.username, body.email, hashPassword]
-          );
-        const [roleResult]=await db.query(
-            'INSERT INTO user_roles(user_id) VALUES (?)',
-            [UserResult.insertId]
-        )
-        const [otpResult]=await db.query(
-            `INSERT INTO otpRecord(user_id) VALUES (?)`,
-            [UserResult.insertId]
-        )
+        const [result]=await db.execute(`CALL signUp_user(?,?,?)`,[body.username, body.email, hashPassword]);
 
-        if(UserResult.affectedRows>0 && roleResult.affectedRows>0 && otpResult.affectedRows>0){
+        if(result.affectedRows>0){
             response.isSuccessful=true;
             response.message="user added successfully";
         } else {
-            response.errorMessage='error in query section in signUp';
+            response.errorMessage='error in stored procedure for signUp';
         }
     } catch (error) {
         response.errorMessage=error.message;
@@ -39,16 +28,14 @@ const findById=async(user_id)=>{
         isSuccessful: false
     }
     try {
-        const [result]=await db.execute("SELECT role_id FROM user_roles WHERE user_id=?",[user_id]);
-        if(result.length===0){
+        const [result]=await db.execute(`CALL find_role_by_userId(?)`,[user_id]);
+
+        const rolename=result[0][0].role_name;
+        if(!rolename){
             return response;
         }
-        const [role]=await db.execute("SELECT role_name FROM roles WHERE role_id=?",[result[0].role_id]);
-        if(role.length===0){
-            return response;
-        }
-        const rolename=role[0].role_name;
-        response.role=rolename;
+
+        response.rolename=rolename;
     } catch (error) {
         return response.errorMessage=error.message;
     }

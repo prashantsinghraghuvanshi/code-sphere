@@ -1,4 +1,3 @@
-const {ErrorHandler}=require('../utils/errorHandler');
 const authModel=require('../models/authModel');
 
 const signIn=async(req, res)=>{

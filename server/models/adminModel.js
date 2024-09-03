@@ -6,8 +6,8 @@ const updateUserRole=async(user_id, role_id, admin_id)=>{
         errorMessage: null
     }
     try {
-        const [query]=await db.execute(`UPDATE user_roles SET role_id=?, updated_by=? WHERE user_id=?`,[role_id, admin_id, user_id]);
-        if(query.length===0){
+        const [result]=await db.execute(`CALL update_user_role(?,?,?)`,[role_id, admin_id, user_id]);
+        if(result.length===0){
             response.errorMessage='cant update user role!';
             return response;
         } else {

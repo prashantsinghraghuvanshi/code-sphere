@@ -41,7 +41,7 @@ const signInUser=async(user_id, password)=>{
     return response;
 }
 
-const verifyOTP=async(user_id,otp,res)=>{
+const verifyOTP=async(user_id,otp)=>{
     let response={
         isSuccessful: false,
         errorMessage: null

@@ -13,8 +13,9 @@ const signUp=async(req, res)=>{
         }
 
         const signUpUser=await userModel.signUpUser(req.body);
+        
         if(!signUpUser.isSuccessful){
-            return res.status(500).json({error:'internal server error'})
+            return res.status(500).json({error: signUpUser.errorMessage})
         }
 
         return res.status(201).json({message:'user created successfully'});

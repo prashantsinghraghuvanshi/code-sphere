@@ -31,12 +31,11 @@ const otpController=async(req,res)=>{
         if(!user_id || !otp){
             return res.status(400).json({success: false, error:'User ID and OTP are required'});
         }
-
-        const response=await authModel.verifyOTP(user_id, otp);
-        if(!response.isSuccessful){
-            return res.status(500).json({success: false, error: response.errorMessage});
+        const result=await authModel.verifyOTP(user_id, otp, res);
+        if(!result.isSuccessful){
+            return res.status(500).json(result);
         } else{
-            return res.status(200).json(response);
+            return res.status(200).json(result);
         }
     } catch (error) {
         return res.status(500).json({error: error.message});
@@ -45,7 +44,7 @@ const otpController=async(req,res)=>{
 
 const signOut=async(req,res)=>{
     try {
-        const user_id=req;
+        const {user_id}=req.body;
 
         if (!user_id) {
             return res.status(400).json({ error: 'no active user found' });

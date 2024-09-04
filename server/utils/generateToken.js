@@ -9,7 +9,7 @@ const generateTokenAndSetCookie=(user_id, res)=>{
         maxAge: 5*24*60*60*1000,
         httpOnly: true,
         sameSite: "strict",
-        secure: process.env.Node_ENV!=="development"
+        secure: process.env.NODE_ENV!=="development"
     });
 };
 

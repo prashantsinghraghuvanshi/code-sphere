@@ -1,8 +1,8 @@
 const express=require('express');
 const router=express.Router();
 
-// const userByIdController=require('../controllers/userController');
+const {userByIdController}=require('../controllers/dataController');
 
-// router.post('/userById', userByIdController);
+router.get('/userById', userByIdController);
 
-module.exports=router;
+module.exports=router;   

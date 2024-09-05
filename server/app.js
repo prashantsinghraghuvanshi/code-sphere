@@ -17,12 +17,14 @@ const authRouter=require('./routes/auth.Routes.js');
 const adminRouter=require('./routes/admin.Routes.js');
 const postRouter=require('./routes/post.Routes.js');
 const dataRouter=require('./routes/data.Routes.js');
+const mailRouter=require('./routes/mail.Routes.js')
 
 app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/post', postRouter);
 app.use('/api/data', dataRouter);
+app.use('/api/mail', mailRouter);
 
 app.use(function(req,res,next){
     next(createError(404));

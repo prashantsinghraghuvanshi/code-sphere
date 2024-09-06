@@ -1,6 +1,6 @@
 const authModel=require('../models/authModel');
 
-const signIn=async(req, res)=>{
+const signInController=async(req, res, next)=>{
     try {
         const {username, password}=req.body;
         if(!username || !password){
@@ -18,8 +18,10 @@ const signIn=async(req, res)=>{
             return res.status(500).json({isSuccessful: data.isSuccessful, error: data.errorMessage});    
         }
 
-        return res.status(202).json({isAccepted: data.isSuccessful, otp: data.otp});
-
+        // return res.status(202).json({isAccepted: data.isSuccessful, otp: data.otp, username: username});
+        req.otp=data.otp;
+        req.username=username;
+        next();
     } catch (error) {
         return res.status(500).json({error: error.message})
     }
@@ -63,7 +65,7 @@ const signOut=async(req,res)=>{
 }
 
 module.exports={
-    signIn,
+    signInController,
     otpController,
     signOut
 }

@@ -2,7 +2,9 @@ const { sendMail } = require('../utils/mailService');
 
 const sendmailController=async(req, res)=>{
     try {
-        const mail = await sendMail();
+        const {username, otp}=req;
+
+        const mail = await sendMail(username, otp);
 
         if(!mail.success){
             res.status(500).json({

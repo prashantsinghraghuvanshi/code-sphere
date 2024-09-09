@@ -4,6 +4,7 @@ const path=require('path');
 const dotenv=require('dotenv');
 const bodyParser = require('body-parser');
 const cookieParser=require('cookie-parser');
+const cors=require('cors');
 
 dotenv.config({path : path.resolve(__dirname, '.env')});
 const app=express();
@@ -11,6 +12,7 @@ const port = process.env.SERVER_PORT || 5001;
 
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(cors());
 
 const userRouter=require('./routes/user.Routes.js');
 const authRouter=require('./routes/auth.Routes.js');

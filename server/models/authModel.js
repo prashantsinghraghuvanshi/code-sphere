@@ -11,6 +11,9 @@ const signInUser=async(user_id, password)=>{
     }
 
     try {
+        // convert this into single stored procedure
+        const otp=generateOtp();
+
         const [data]=await db.query(`CALL get_user_data_by_id(?)`,[user_id]);
 
         if(data.length===0){
@@ -21,11 +24,10 @@ const signInUser=async(user_id, password)=>{
         const isMatch = await bcrypt.compare(password, data[0][0].password);
 
         if(!isMatch){
+            response.errorCode=400,
             response.errorMessage='Invalid username or password';
             return response;
         }
-
-        const otp=generateOtp();
 
         const [result]=await db.query(`CALL post_otp(?,?)`,[user_id, otp]);
 

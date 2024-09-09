@@ -12,11 +12,14 @@ const signInController=async(req, res, next)=>{
             return res.status(500).json({error:'not able fetch user id'})
         }
 
-        const data=await authModel.signInUser(user_id, password);
+        const data = await authModel.signInUser(user_id, password);
 
-        if(!data.isSuccessful){
-            return res.status(500).json({isSuccessful: data.isSuccessful, error: data.errorMessage});    
-        }
+        if (!data.isSuccessful) {
+            const statusCode = data.errorCode ? data.errorCode : 500;
+            return res.status(statusCode).json({
+            error: data.errorMessage || "An error occurred during login.",
+        });
+}
 
         // return res.status(202).json({isAccepted: data.isSuccessful, otp: data.otp, username: username});
         req.otp=data.otp;

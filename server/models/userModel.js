@@ -3,7 +3,7 @@ const bcrypt=require('bcrypt');
 
 const signUpUser = async (body) => {
     let response = {
-        isSuccessful: false,
+        success: false,
         message: null,
         errorMessage: null
     };
@@ -13,17 +13,17 @@ const signUpUser = async (body) => {
         const [result] = await db.execute(`CALL signUp_user(?,?,?)`, [body.username, body.email, hashPassword]);
 
         if (result.affectedRows>0) {
-            response.isSuccessful = true;
+            response.success = true;
             response.message = "User added successfully";
         } else {
-            response.errorMessage = 'Error in stored procedure for sign-up';
+            response.message = 'Duplicate Data';
         }
 
     } catch (error) {
         if (error.code === 'ER_SIGNAL_EXCEPTION') {
-            response.errorMessage = error.sqlMessage || 'An error occurred in the sign-up process.';
+            response.message = error.sqlMessage || 'An error occurred in the sign-up process(database)';
         } else {
-            response.errorMessage = error.message || 'Unexpected error during sign-up.';
+            response.message = error.message || 'Unexpected error during sign-up.';
         }
     }
     

@@ -17,14 +17,8 @@ export const useLogin=()=>{
                 password
             });
             console.log(res);
-
-            // not working
-            if (!res.data.success) {
-                toast.error(res.data.error);
-            }
-
             toast.success(res.data.message);
-            
+            return res;
         } catch (error) {
             if (error.response && error.response.data) {
                 const { status, data } = error.response;
@@ -32,6 +26,9 @@ export const useLogin=()=>{
                 switch (status) {
                   case 400: // Bad request (e.g., invalid email format)
                     toast.error(data.error || "Invalid registration data provided.");
+                    break;
+                  case 404: // Not Found
+                    toast.error(data.error || "no user record found in database");
                     break;
                   case 409: // Conflict (e.g., username or email already exists)
                     toast.error(data.error || "Username or email already in use.");

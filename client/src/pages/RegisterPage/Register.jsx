@@ -1,20 +1,25 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useRegister } from "../../hooks/useRegister";
 
 const Register = () => {
   const [username, setUsername]=useState("");
   const [email, setEmail]=useState("");
   const [password, setPassword]=useState("");
+  const navigate = useNavigate();
 
   const {register}=useRegister();
 
   const handleSubmit=async(e)=>{
     e.preventDefault();
-    await register(username, email, password);
+    const result=await register(username, email, password);
+
+    if (result.status === 201) {
+      navigate('/');
+    }
   }
 
-    return (
+  return (
       <section className="h-screen flex flex-col md:flex-row justify-center space-y-10 md:space-y-0 md:space-x-16 items-center my-2 mx-5 md:mx-0 md:my-0">
         <div className="md:w-1/3 max-w-sm">
           <div className="my-5 mb-10 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-neutral-300 after:mt-0.5 after:flex-1 after:border-t after:border-neutral-300">
@@ -64,5 +69,6 @@ const Register = () => {
       </section>
     );
   };
+
   
-  export default Register;
+export default Register;

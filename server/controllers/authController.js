@@ -9,7 +9,7 @@ const signInController=async(req, res, next)=>{
 
         const user_id=await authModel.getUserId(username);
         if(!user_id){
-            return res.status(500).json({error:'not able fetch user id'})
+            return res.status(404).json({error:'no user record found'})
         }
 
         const data = await authModel.signInUser(user_id, password);
@@ -17,11 +17,10 @@ const signInController=async(req, res, next)=>{
         if (!data.isSuccessful) {
             const statusCode = data.errorCode ? data.errorCode : 500;
             return res.status(statusCode).json({
-            error: data.errorMessage || "An error occurred during login.",
-        });
-}
-
-        // return res.status(202).json({isAccepted: data.isSuccessful, otp: data.otp, username: username});
+                error: data.errorMessage || "An error occurred during login.",
+            });
+        }
+        
         req.otp=data.otp;
         req.username=username;
         next();
@@ -36,9 +35,10 @@ const otpController=async(req,res)=>{
         if(!user_id || !otp){
             return res.status(400).json({success: false, error:'User ID and OTP are required'});
         }
-        const result=await authModel.verifyOTP(user_id, otp, res);
-        if(!result.isSuccessful){
-            return res.status(500).json(result);
+        const result=await authModel.verifyOTP(user_id, otp);
+        // 
+        if(!result.success){
+            return res.status(400).json(result);
         } else{
             return res.status(200).json(result);
         }

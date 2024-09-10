@@ -23,10 +23,12 @@ const signInUser=async(user_id, password)=>{
 
         const isMatch = await bcrypt.compare(password, data[0][0].password);
 
+        console.log(isMatch)
         if(!isMatch){
-            response.errorCode=400,
-            response.errorMessage='Invalid username or password';
-            return response;
+            // response.errorCode=400,
+            // response.errorMessage='Invalid username or password';
+            // return response;
+            res.JSON(400,"lid username or password")
         }
 
         const [result]=await db.query(`CALL post_otp(?,?)`,[user_id, otp]);
@@ -53,15 +55,15 @@ const signInUser=async(user_id, password)=>{
 
 const verifyOTP=async(user_id,otp,res)=>{
     let response={
-        success: false,
-        errorMessage: null
+        success: false
     }
     
     try {
         const [data]=await db.execute(`CALL verify_otp(?)`,[user_id]);
 
         if(data.affectedRows===0 || !data[0][0].otp){
-            response.errorMessage='No otp record found';
+            response.message='No otp record found';
+            response.statusCode=404;
             return response;
         }
 
@@ -70,10 +72,12 @@ const verifyOTP=async(user_id,otp,res)=>{
 
         if(currTime>otpRecord.expired_at){
             response.errorMessage='OTP expired';
+
             return response;
         }
         if(otp!=otpRecord.otp){
-            response.errorMessage='Invalid OTP'
+            response.message='Invalid OTP'
+            response.statusCode=400;
             return response;
         }
         const [logIn] = await db.execute(`CALL set_user_loggedIn(?)`,[user_id]);
@@ -86,7 +90,7 @@ const verifyOTP=async(user_id,otp,res)=>{
         response.success=true;
         generateTokenAndSetCookie(user_id, res);
     } catch (error) {
-        response.errorMessage=error.message;
+        response.message=error.message;
     }
     return response;
 }

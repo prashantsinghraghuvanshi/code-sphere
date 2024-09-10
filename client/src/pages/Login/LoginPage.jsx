@@ -1,16 +1,20 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useLogin } from "../../hooks/useLogin";
 
 const Login = () => {
   const [username, setUsername]=useState("");
   const [password, setPassword]=useState("");
+  const navigate=useNavigate();
 
   const {login, loading}=useLogin();
 
   const handleSubmit = async(e) =>{
     e.preventDefault();
-    await login(username, password);
+    const result=await login(username, password);
+    if(result.status===200){
+      navigate('/otpVerification');
+    }
   }
 
   return (

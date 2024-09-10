@@ -21,15 +21,32 @@ export const useOtpVerification=()=>{
             });
             console.log(res);
 
-            // not working
-            if(!res.data.success)   {
-                toast.error(res.data.error);
-            }
-
-            toast.success(res.data.message);
+            toast.success('otp verified');
         } catch (error) {
-            toast.error(error.message);
-        } finally {
+            if (error.response && error.response.data) {
+                const { status, data } = error.response;
+        
+                switch (status) {
+                  case 400: // Bad request (e.g., invalid email format)
+                    toast.error(data.error || "Incorrect otp.");
+                    break;
+                  case 404: // Not Found
+                    toast.error(data.error || "no otp record found");
+                    break;
+                  case 500: // Internal server error
+                    toast.error(
+                      "An unexpected error occurred during otp verification. Please try again later."
+                    );
+                    break;
+                  default:
+                    toast.error(
+                      "Registration failed. Please check the response for details."
+                    );
+                }
+              } else {
+                toast.error(error.message || "An error occurred during registration.");
+              }
+             } finally {
             setLoading(false);
         }
     };

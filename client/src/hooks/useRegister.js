@@ -20,7 +20,7 @@ export const useRegister = () => {
       }
 
       toast.success(response.data.message); 
-
+      return response;
     } catch (error) {
       if (error.response && error.response.data) {
         const { status, data } = error.response;

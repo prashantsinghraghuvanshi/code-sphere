@@ -14,8 +14,8 @@ const signUp=async(req, res)=>{
 
         const signUpUser=await userModel.signUpUser(req.body);
         
-        if(!signUpUser.isSuccessful){
-            return res.status(500).json({error: signUpUser.errorMessage})
+        if(!signUpUser.success){
+            return res.status(400).json({error: signUpUser.message})
         }
 
         return res.status(201).json({message:'user created successfully'});

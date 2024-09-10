@@ -32,7 +32,7 @@ const signUpUser = async (body) => {
 
 const findById=async(user_id)=>{
     let response={
-        isSuccessful: false
+        success: false
     }
     try {
         const [result]=await db.execute(`CALL find_role_by_userId(?)`,[user_id]);
@@ -42,7 +42,8 @@ const findById=async(user_id)=>{
         if(!rolename){
             response.errorMessage='Error in stored procedure for findById';
         }
-
+        
+        response.success=true;
         response.rolename=rolename;
     } catch (error) {
         if(error.code==='ER_SIGNAL_EXCEPTION'){

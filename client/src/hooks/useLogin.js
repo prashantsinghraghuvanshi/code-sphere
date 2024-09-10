@@ -18,6 +18,7 @@ export const useLogin=()=>{
             });
             console.log(res);
 
+            // not working
             if (!res.data.success) {
                 toast.error(res.data.error);
             }
@@ -25,7 +26,29 @@ export const useLogin=()=>{
             toast.success(res.data.message);
             
         } catch (error) {
-            toast.error(error.message);
+            if (error.response && error.response.data) {
+                const { status, data } = error.response;
+        
+                switch (status) {
+                  case 400: // Bad request (e.g., invalid email format)
+                    toast.error(data.error || "Invalid registration data provided.");
+                    break;
+                  case 409: // Conflict (e.g., username or email already exists)
+                    toast.error(data.error || "Username or email already in use.");
+                    break;
+                  case 500: // Internal server error
+                    toast.error(
+                      "An unexpected error occurred during registration. Please try again later."
+                    );
+                    break;
+                  default:
+                    toast.error(
+                      "Registration failed. Please check the response for details."
+                    );
+                }
+              } else {
+                toast.error(error.message || "An error occurred during registration.");
+              }
         } finally {
             setLoading(false);
         }

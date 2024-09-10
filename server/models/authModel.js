@@ -53,7 +53,7 @@ const signInUser=async(user_id, password)=>{
 
 const verifyOTP=async(user_id,otp,res)=>{
     let response={
-        isSuccessful: false,
+        success: false,
         errorMessage: null
     }
     
@@ -83,7 +83,7 @@ const verifyOTP=async(user_id,otp,res)=>{
             return response;
         }
 
-        response.isSuccessful=true;
+        response.success=true;
         generateTokenAndSetCookie(user_id, res);
     } catch (error) {
         response.errorMessage=error.message;

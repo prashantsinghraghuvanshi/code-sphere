@@ -1,4 +1,5 @@
 const authModel=require('../models/authModel');
+const { generateTokenAndSetCookie } = require('../utils/generateToken');
 
 const signInController=async(req, res, next)=>{
     try {
@@ -23,6 +24,7 @@ const signInController=async(req, res, next)=>{
         
         req.otp=data.otp;
         req.username=username;
+        generateTokenAndSetCookie(user_id, res);
         next();
     } catch (error) {
         return res.status(500).json({error: error.message})

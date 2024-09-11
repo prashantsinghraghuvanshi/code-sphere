@@ -1,6 +1,6 @@
 import Dashboard from "../../components/Dashboard";
 import Navbar from "../../components/Navbar";
-import Post from "../../components/PostContainer";
+import PostContainer from "../../components/PostContainer";
 
 const HomePage = () => {
   return (
@@ -8,7 +8,7 @@ const HomePage = () => {
     <Navbar />
     <div className="flex h-screen">
       <Dashboard />
-      <Post />
+      <PostContainer />
     </div>
     </>
   );

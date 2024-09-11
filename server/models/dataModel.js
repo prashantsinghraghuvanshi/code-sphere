@@ -26,6 +26,36 @@ const userByIdModel=async(userId)=>{
     return response;
 }
 
+const getQueries=async()=>{
+    let response={
+        success: false,
+        message: null
+    }
+
+    try {
+        const [result]=await db.query('CALL get_all_queries()');
+
+        if(result.length===0){
+            response.message='unable to fetch queries from database';
+            return response;
+        }
+
+        response.success=true;
+        response.message='fetched available queries from database';
+        response.queries=result[0];
+    } catch (error) {
+        if(error.code==='ER_SIGNAL_EXCEPTION'){
+            response.message=error.sqlMessage || 'An error occured at query handling';
+        } else {
+            response.message=error.message || 'unexpected error occured at server side';
+        }
+    } finally {
+        return response;
+    }
+
+}
+
 module.exports={
-    userByIdModel
+    userByIdModel,
+    getQueries
 }

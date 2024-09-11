@@ -23,6 +23,24 @@ const userByIdController=async(req,res)=>{
     }
 }
 
+const getQueriesController=async(req, res)=>{
+    try {
+        const data=await dataModel.getQueries();
+        if(!data.success){
+            return res.status(500).json({success: data.success, error:data.message});
+        }
+
+        return res.status(200).json({
+            success: data.success,
+            message: data.message,
+            data: data.queries,
+        })
+    } catch (error) {
+        return res.status(500).json({success: false, error : "internal server error"});
+    }
+}
+
 module.exports={
-    userByIdController
+    userByIdController,
+    getQueriesController
 }

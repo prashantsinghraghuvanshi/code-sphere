@@ -3,9 +3,9 @@ const postModel=require('../models/postModel');
 const postQuestion=async(req, res)=>{
     try {
         const role=req.roleUser;
-        if(role!=='mentor' && role!=='user' && role!=='admin'){
-            return res.status(401).json({error:'unauthorized user'})
-        }
+        // if(role!=='mentor' && role!=='user' && role!=='admin'){
+        //     return res.status(401).json({error:'unauthorized user'})
+        // }
 
         const {title, content, user_id}=req.body;
         if(!title || !content || !user_id){

@@ -1,16 +1,21 @@
 import { useState } from "react";
 import { useOtpVerification } from "../../hooks/useOtpVerification";
+import { useNavigate } from "react-router-dom";
 
 
 const Login = () => {
   const [otp, setOtp]=useState("");
+  const navigate=useNavigate();
 
   const {otpVerification, loading}=useOtpVerification();
 
   const handleSubmit = async(e) =>{
     e.preventDefault();
     // need to get userId here
-    await otpVerification(otp);
+    const result=await otpVerification(otp);
+    if(result.status===200){
+      navigate('/home');
+    }
   }
 
   return (

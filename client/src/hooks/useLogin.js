@@ -12,13 +12,16 @@ export const useLogin=()=>{
         setLoading(true);
 
         try {
-            const res= await axios.post('http://localhost:5001/api/auth/signIn', {
+            toast('Sign-in request sent...', {
+              icon: '⌛️',
+            });
+            const result= await axios.post('http://localhost:5001/api/auth/signIn', {
                 username,
                 password
             });
-            console.log(res);
-            toast.success(res.data.message);
-            return res;
+            console.log(result);
+            toast.success(result.data.message);
+            return result
         } catch (error) {
             if (error.response && error.response.data) {
                 const { status, data } = error.response;

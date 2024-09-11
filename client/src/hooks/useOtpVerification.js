@@ -8,20 +8,21 @@ export const useOtpVerification=()=>{
     const otpVerification=async(otp)=>{
         // need to fetch userId too here
         // fn, i've hardcoded this to check
-        const user_id=1;
+        const user_id=20;
         const success=handleInputError({otp});
         if(!success)    return;
 
         setLoading(true);
 
         try {
-            const res=await axios.post('http://localhost:5001/api/auth/verifyOtp', {
+            const result=await axios.post('http://localhost:5001/api/auth/verifyOtp', {
                 user_id,
                 otp
             });
-            console.log(res);
+            console.log(result);
 
             toast.success('otp verified');
+            return result
         } catch (error) {
             if (error.response && error.response.data) {
                 const { status, data } = error.response;

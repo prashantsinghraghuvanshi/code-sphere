@@ -1,6 +1,6 @@
 import Dashboard from "../../components/Dashboard";
 import Navbar from "../../components/Navbar";
-import Post from "../../components/Post";
+import Post from "../../components/PostContainer";
 
 const HomePage = () => {
   return (

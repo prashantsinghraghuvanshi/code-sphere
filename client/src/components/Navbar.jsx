@@ -3,7 +3,7 @@ import { faHome, faPlus, faUser } from '@fortawesome/free-solid-svg-icons';
 
 const Navbar = () => {
     return (
-      <nav className="bg-white border-b-2 border-gray-200 px-4 py-2 flex justify-between">
+      <nav className="fixed top-0 w-full bg-white border-b-2 border-gray-200 px-4 py-2 flex justify-between">
         {/* Left side */}
         <div className="flex items-center">
             {/* Home icon */}

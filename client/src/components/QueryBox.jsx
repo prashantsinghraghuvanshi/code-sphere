@@ -1,7 +1,8 @@
 import PropTypes from "prop-types";
+import moment from "moment";
 
 export default function QueryBox({username, updatedAt, title, content}) {
-  
+  const formattedDate=moment(updatedAt).endOf('day').fromNow();;
   return (
     <div className="bg-white rounded-lg p-4 shadow-md">
       <div className="flex justify-between items-center mb-4">
@@ -13,7 +14,7 @@ export default function QueryBox({username, updatedAt, title, content}) {
           />
         <div className="ml-2">
           <h3 className="text-lg font-bold">{username}</h3>
-          <p className="text-gray-500">Updated at : {updatedAt}</p>
+          <p className="text-gray-500">Updated at : {formattedDate}</p>
         </div>
       </div>
     </div>

@@ -1,17 +1,31 @@
-export default function Dashboard() {
-  return (
-    <div className="w-1/4 bg-gray-100 p-4">
-        <h2 className="text-2xl font-bold mb-4 text-center">Dashboard</h2>
-        <ul className="space-y-2">
-          <li className="flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+import { useSelector } from "react-redux";
 
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m0-4l-3-3m3 0l3-3m-6 6V9" />
-            </svg>
-            <a href="#" className="ml-2 text-gray-700 hover:text-gray-900">Home</a>
-          </li>
-          {/* Add more dashboard items here */}
-        </ul>
+export default function Dashboard() {
+  const {name, rolename}=useSelector((state)=>state.auth);
+  return (
+    <div className="w-1/4 h-[calc(100vh-64px)] bg-gray-100 p-6 fixed left-0 top-[64px] flex flex-col justify-between">
+      <div className="flex flex-col items-center justify-center mb-8">
+        <img
+          className="w-20 h-20 rounded-full object-cover mb-2"
+          src="https://placehold.it/200x200" // Replace with actual profile image URL
+          alt="Profile Picture"
+        />
+        <h3 className="text-xl font-medium">hello {name}</h3>
+        <span className="text-gray-500">status : {rolename}</span>
       </div>
-  )
+      <div className="flex flex-col space-y-4">
+        <div className="flex items-center justify-between border border-gray-200 rounded-md px-4 py-2">
+          <span className="text-gray-700 font-medium">Queries Posted</span>
+          <span className="text-gray-500">queriesPosted</span>
+        </div>
+        <div className="flex items-center justify-between border border-gray-200 rounded-md px-4 py-2">
+          <span className="text-gray-700 font-medium">Queries Answered</span>
+          <span className="text-gray-500">queriesAnswered</span>
+        </div>
+      </div>
+      <button className="mt-8 py-2 px-4 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none">
+        Logout
+      </button>
+    </div>
+  );
 }

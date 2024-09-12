@@ -6,13 +6,11 @@ import { useSelector } from "react-redux";
 const Login = () => {
   const [otp, setOtp]=useState("");
   const navigate=useNavigate();
-  const {user_id, rolename}=useSelector((state)=>state.auth);
+  const {user_id}=useSelector((state)=>state.auth);
   const {otpVerification, loading}=useOtpVerification();
 
   const handleSubmit = async(e) =>{
     e.preventDefault();
-    console.log(rolename);
-    // need to get userId here
     const result=await otpVerification(user_id, otp);
     if (result.status === 200) {
       navigate('/home');

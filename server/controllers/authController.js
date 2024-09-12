@@ -24,6 +24,7 @@ const signInController=async(req, res, next)=>{
         
         req.otp=data.otp;
         req.username=username;
+        req.user_id=user_id;
         generateTokenAndSetCookie(user_id, res);
         next();
     } catch (error) {

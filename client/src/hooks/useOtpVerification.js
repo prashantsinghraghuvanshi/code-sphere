@@ -5,10 +5,7 @@ import axios from 'axios';
 export const useOtpVerification=()=>{
     const [loading, setLoading]=useState(false);
 
-    const otpVerification=async(otp)=>{
-        // need to fetch userId too here
-        // fn, i've hardcoded this to check
-        const user_id=32;
+    const otpVerification=async(user_id, otp)=>{
         const success=handleInputError({otp});
         if(!success)    return;
 

@@ -2,7 +2,7 @@ const { sendMail } = require('../utils/mailService');
 
 const sendmailController=async(req, res)=>{
     try {
-        const {username, otp}=req;
+        const {username, otp, user_id}=req;
 
         const mail = await sendMail(username, otp);
 
@@ -15,7 +15,8 @@ const sendmailController=async(req, res)=>{
 
         res.status(200).json({
             success : mail.success,
-            message : mail.message
+            message : mail.message,
+            user_id: user_id 
         });
     } catch (error) {
         res.status(500).json({error: error.message});

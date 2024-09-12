@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from 'react-redux';
+import { setUser } from '../../Store/authSlice';
 import { useLogin } from "../../hooks/useLogin";
 
 const Login = () => {
   const [username, setUsername]=useState("");
   const [password, setPassword]=useState("");
+  const dispatch = useDispatch();
   const navigate=useNavigate();
 
   const {login, loading}=useLogin();
@@ -12,6 +15,9 @@ const Login = () => {
   const handleSubmit = async(e) =>{
     e.preventDefault();
     const result=await login(username, password);
+    console.log(result.data.user_id);
+    // for now, i have hardcoded the rolename, it should be made dynamic soon
+    dispatch(setUser({ user_id: result.data.user_id, rolename: 'user' }));
     if(result.status===200){
       navigate('/otpVerification');
     }

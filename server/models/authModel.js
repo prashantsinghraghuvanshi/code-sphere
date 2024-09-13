@@ -28,7 +28,7 @@ const signInUser=async(user_id, password)=>{
             // response.errorCode=400,
             // response.errorMessage='Invalid username or password';
             // return response;
-            res.JSON(400,"lid username or password")
+            response.message("invalid username or password")
         }
 
         const [result]=await db.query(`CALL post_otp(?,?)`,[user_id, otp]);
@@ -88,8 +88,8 @@ const verifyOTP=async(user_id,otp)=>{
         }
 
         // generateTokenAndSetCookie(user_id, res);
+        response.data=logIn[0];
         response.success=true;
-
     } catch (error) {
         response.message=error.message;
     }

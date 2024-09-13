@@ -12,6 +12,7 @@ export default function PostContainer() {
           <QueryBox
             key={query.query_id}
             username={query.username}
+            icon={query.icon}
             updatedAt={query.updated_at}
             title={query.title}
             content={query.content}

@@ -10,7 +10,8 @@ const signUpUser = async (body) => {
 
     try {
         const hashPassword = await bcrypt.hash(body.password, 8);
-        const [result] = await db.execute(`CALL signUp_user(?,?,?)`, [body.username, body.email, hashPassword]);
+        const iconTemplate='https://api.multiavatar.com/'+body.username+'.svg';
+        const [result] = await db.execute(`CALL signUp_user(?,?,?,?)`, [body.username, body.email, hashPassword, iconTemplate]);
 
         if (result.affectedRows>0) {
             response.success = true;

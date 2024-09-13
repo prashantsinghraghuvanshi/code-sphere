@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useOtpVerification } from "../../hooks/useOtpVerification";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setUserIcon, setUserName } from '../../Store/authSlice';
 
 const Login = () => {
+  const dispatch = useDispatch();
   const [otp, setOtp]=useState("");
   const navigate=useNavigate();
   const {user_id}=useSelector((state)=>state.auth);
@@ -13,6 +15,9 @@ const Login = () => {
     e.preventDefault();
     const result=await otpVerification(user_id, otp);
     if (result.status === 200) {
+      dispatch(setUserIcon({ icon : result.data.data[0].icon }));
+      dispatch(setUserName({ username: result.data.data[0].username}));
+      
       navigate('/home');
     } else {
       alert('OTP verification failed. Please try again.');

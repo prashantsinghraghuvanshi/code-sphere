@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
-import { setUser } from '../../Store/authSlice';
+import { setUserId} from '../../Store/authSlice';
 import { useLogin } from "../../hooks/useLogin";
 import toast from "react-hot-toast";
 
@@ -18,9 +18,10 @@ const Login = () => {
     const result=await login(username, password);
     
     if(result.status===200){
-      console.log(result.data.user_id);
+      console.log(result.data);
       // for now, i have hardcoded the rolename, it should be made dynamic soon
-      dispatch(setUser({ user_id: result.data.user_id, name: username, rolename: 'user' }));
+      // name: username, rolename: 'user'
+      dispatch(setUserId({ user_id: result.data.user_id }));
       navigate('/otpVerification');
     } else {
       toast.error('Login failed. Please try again.');

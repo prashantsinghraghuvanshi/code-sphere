@@ -1,14 +1,15 @@
 import PropTypes from "prop-types";
 import moment from "moment";
 
-export default function QueryBox({username, updatedAt, title, content}) {
-  const formattedDate=moment(updatedAt).endOf('day').fromNow();;
+export default function QueryBox({username, icon, updatedAt, title, content}) {
+  const formattedDate=moment(updatedAt).startOf('hour').fromNow() ;
+
   return (
     <div className="bg-white rounded-lg p-4 shadow-md">
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center">
           <img
-            src="https://example.com/user_profile_photo.jpg" // Replace with actual URL
+            src={icon} // Replace with actual URL
             alt="User Profile Photo"
             className="w-10 h-10 rounded-full"
           />
@@ -26,6 +27,7 @@ export default function QueryBox({username, updatedAt, title, content}) {
 
 QueryBox.propTypes = {
   username: PropTypes.string.isRequired,
+  icon: PropTypes.string.isRequired,
   updatedAt: PropTypes.string.isRequired, 
   title: PropTypes.string.isRequired,
   content: PropTypes.string.isRequired,

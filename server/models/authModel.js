@@ -98,21 +98,22 @@ const verifyOTP=async(user_id,otp)=>{
 
 const signOutUser=async(user_id)=>{
     let response={
-        isSuccessful: false,
-        errorMessage: null
+        success: false,
+        message: null
     }
 
     try {
         const [result]=await db.execute(`CALL set_user_loggedIn(?)`,[user_id])
 
-        if(result.affectedRows===0){
-            response.errorMessage='cant logout user';
+        if(result.length===0){
+            response.message='cant logout user';
             return response;
         }
 
-        response.isSuccessful=true;        
+        response.success=true;  
+        response.message='user logged out';      
     } catch (error) {
-        response.errorMessage=error.message;
+        response.message=error.message;
     }
 
     return response;

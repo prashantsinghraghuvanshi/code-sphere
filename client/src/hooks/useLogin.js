@@ -20,7 +20,6 @@ export const useLogin=()=>{
                 password
             });
             console.log(result);
-            toast.success(result.data.message);
             return result
         } catch (error) {
             if (error.response && error.response.data) {

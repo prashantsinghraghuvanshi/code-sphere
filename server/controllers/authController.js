@@ -62,11 +62,13 @@ const signOut=async(req,res)=>{
         }
 
         const data=await authModel.signOutUser(user_id);
-        if(!data.isSuccessful){
+        if(!data.success){
             return res.status(500).json({error: 'internal server error'})
         }
 
-        return res.status(200).json({message: 'user logged out'});
+        return res.status(200).json({success: data.success, 
+                                    message: 'user logged out'
+                                    });
 
     } catch (error) {
         return res.status(500).json({error: error.message})

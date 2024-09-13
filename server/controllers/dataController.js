@@ -40,7 +40,33 @@ const getQueriesController=async(req, res)=>{
     }
 }
 
+const getUserStatsController=async(req,res)=>{
+    try {
+        // was facing issue here :
+        // instead of req.body, req.query will be used here
+        const {userId}=req.query;
+        if(!userId){
+            return res.status(400).json({error:'no user data provided'});
+        }
+
+        const data=await dataModel.getStats(userId);
+        if(!data.success){
+            return res.status(data.errorcode).json({success: data.success, error : data.message});
+        }
+        
+        return res.status(200).json({
+            success: data.success,
+            message: data.message,
+            queries_posted: data.stats[0].queries_posted,
+            queries_solved: data.stats[0].queries_solved
+        })
+    } catch (error) {
+        return res.status(500).json({success: false, error : 'internal server error'})
+    }
+}
+
 module.exports={
     userByIdController,
-    getQueriesController
+    getQueriesController,
+    getUserStatsController
 }

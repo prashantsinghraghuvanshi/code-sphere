@@ -52,10 +52,37 @@ const getQueries=async()=>{
     } finally {
         return response;
     }
+}
 
+const getStats=async(userId)=>{
+    let response={
+        success: false,
+        message: null
+    }
+    try {
+        const [result]=await db.query(`CALL get_queries_data(?)`,[userId]);
+
+        if(result.length===0){
+            response.message='unable to fetch data from database';
+            return response;
+        }
+
+        response.success=true;
+        response.message='fetched user stats from database';
+        response.stats=result[0];
+    } catch (error) {
+        if(error.code==='ER_SIGNAL_EXCEPTION'){
+            response.message=error.sqlMessage || 'An error occured at query handling';
+        } else {
+            response.message=error.message || 'unexpected error occured at server side';
+        }
+    } finally {
+        return response;
+    }
 }
 
 module.exports={
     userByIdModel,
-    getQueries
+    getQueries,
+    getStats
 }

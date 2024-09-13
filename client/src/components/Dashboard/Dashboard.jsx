@@ -1,9 +1,10 @@
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { clearUser } from "../Store/authSlice";
+import { clearUser } from "../../Store/authSlice";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { useLogout } from "../hooks/useLogout";
+import { useLogout } from "../../hooks/useLogout";
+import UserStats from "./UserStats";
 
 export default function Dashboard() {
   const {user_id, name, rolename, icon}=useSelector((state)=>state.auth);
@@ -34,16 +35,7 @@ export default function Dashboard() {
         <h3 className="text-xl font-medium">hello {name} !</h3>
         <span className="text-gray-500">Current Status : {rolename?rolename:'user'}</span>
       </div>
-      <div className="flex flex-col space-y-4">
-        <div className="flex items-center justify-between border border-gray-200 rounded-md px-4 py-2">
-          <span className="text-gray-700 font-medium">Queries Posted</span>
-          <span className="text-gray-500">queriesPosted</span>
-        </div>
-        <div className="flex items-center justify-between border border-gray-200 rounded-md px-4 py-2">
-          <span className="text-gray-700 font-medium">Queries Answered</span>
-          <span className="text-gray-500">queriesAnswered</span>
-        </div>
-      </div>
+      <UserStats />
       <button
       onClick={handleLogout} 
       className="mt-8 py-2 px-4 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none">

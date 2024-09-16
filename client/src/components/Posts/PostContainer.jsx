@@ -1,4 +1,4 @@
-import { useGetQueries } from "../hooks/useGetQueries";
+import { useGetQueries } from "../../hooks/useGetQueries";
 import QueryBox from "./QueryBox";
 
 export default function PostContainer() {
@@ -11,6 +11,7 @@ export default function PostContainer() {
         {queries.map((query) => (
           <QueryBox
             key={query.query_id}
+            queryId={query.query_id}
             username={query.username}
             icon={query.icon}
             updatedAt={query.updated_at}

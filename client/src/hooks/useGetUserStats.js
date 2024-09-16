@@ -39,7 +39,7 @@ export const useGetUserStats = (userId) => {
         };
 
         getUserStats();
-    }, []); 
+    }, [userId]); 
 
     return { queryCnt, solutionCnt, loading };
 };

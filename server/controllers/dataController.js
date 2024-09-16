@@ -51,7 +51,7 @@ const getUserStatsController=async(req,res)=>{
 
         const data=await dataModel.getStats(userId);
         if(!data.success){
-            return res.status(data.errorcode).json({success: data.success, error : data.message});
+            return res.status(500).json({success: data.success, error : data.message});
         }
         
         return res.status(200).json({
@@ -65,8 +65,32 @@ const getUserStatsController=async(req,res)=>{
     }
 }
 
+const getSolutionsController=async(req,res)=>{
+    try {
+        const {query_id}=req.query;
+        if(!query_id){
+            return res.status(400).json({error:'no query id provided'});
+        }
+
+        const data=await dataModel.getSolutionModel(query_id);
+
+        if(!data.success){
+            return res.status(500).json({success: data.success, error: data.message});
+        }
+
+        return res.status(200).json({
+            success: data.success,
+            message:data.message,
+            data: data.data
+        })
+    } catch (error) {
+        return res.status(500).json({success: false, error : 'internal server error'})
+    }
+}
+
 module.exports={
     userByIdController,
     getQueriesController,
-    getUserStatsController
+    getUserStatsController,
+    getSolutionsController
 }

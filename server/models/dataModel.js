@@ -81,8 +81,37 @@ const getStats=async(userId)=>{
     }
 }
 
+const getSolutionModel=async(query_id)=>{
+    let response={
+        success: false,
+        message: null
+    }
+
+    try {
+        const [result]=await db.query(`CALL get_solutions_by_queryID(?)`,[query_id]);
+
+        if(result.length===0){
+            response.message='unable to fetch solutions from database';
+            return response;
+        }
+
+        response.success=true;
+        response.message='successfully fetched solutions from database';
+        response.data=result[0];
+    } catch (error) {
+        if(error.code==='ER_SIGNAL_EXCEPTION'){
+            response.message=error.sqlMessage || 'An error occured at query handling';
+        } else {
+            response.message=error.message || 'unexpected error occured at server side';
+        }
+    } finally {
+        return response;
+    }
+}
+
 module.exports={
     userByIdModel,
     getQueries,
-    getStats
+    getStats,
+    getSolutionModel
 }

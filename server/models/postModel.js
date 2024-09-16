@@ -26,15 +26,18 @@ const postQues=async(title, content, user_id)=>{
 
 const postSol=async(query_id, content, user_id)=>{
     let response={
-        isSuccessful: false
+        success: false
     }
 
     try {
         const [result]=await db.query('CALL post_solution(?,?,?)',[query_id, user_id, content])
 
-        if(result.affectedRows>0){
-            response.isSuccessful=true;
+        if(result){
+            response.success=true;
             response.message='solution posted successfully';
+            response.data=result[0];
+        } else {
+            response.message='solution couldnt be posted';
         }
 
     } catch (error) {

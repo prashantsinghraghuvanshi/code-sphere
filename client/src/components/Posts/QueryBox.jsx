@@ -4,7 +4,7 @@ import { useState } from "react";
 import SolutionBox from "./SolutionBox";
 
 export default function QueryBox({ username, queryId, icon, updatedAt, title, content }) {
-  const formattedDate = moment(updatedAt).startOf("hour").fromNow();
+  const formattedDate = moment(updatedAt).format('ll');
   const [isOpen, setIsOpen] = useState(false);  // State to toggle solution visibility
 
   const handleOnClick = () => {

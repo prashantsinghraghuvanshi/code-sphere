@@ -2,7 +2,7 @@ const postModel=require('../models/postModel');
 
 const postQuestion=async(req, res)=>{
     try {
-        const role=req.roleUser;
+        // const role=req.roleUser;
         // if(role!=='mentor' && role!=='user' && role!=='admin'){
         //     return res.status(401).json({error:'unauthorized user'})
         // }
@@ -25,10 +25,10 @@ const postQuestion=async(req, res)=>{
 
 const postSolution=async(req, res)=>{
     try {
-        const role=req.roleUser;
-        if(role!='mentor'){
-            return res.status(401).json({error:'unauthorized user'})
-        }
+        // const role=req.roleUser;
+        // if(role!='mentor'){
+        //     return res.status(401).json({error:'unauthorized user'})
+        // }
 
         const {query_id, content, user_id}=req.body;
         if(!query_id || !content || !user_id){
@@ -36,10 +36,13 @@ const postSolution=async(req, res)=>{
         }
 
         const data=await postModel.postSol(query_id, content, user_id);
-        if(!data.isSuccessful){
+        if(!data.success){
             return res.status(500).json({error: 'failed to post solution'});
         }
-        return res.status(201).json({message: "solution posted"});
+        return res.status(201).json({
+            message: "solution posted",
+            data: data.data
+        });
     } catch (error) {
         return res.status(500).json({
             error: error.message

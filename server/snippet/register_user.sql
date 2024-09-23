@@ -1,9 +1,13 @@
+USE code_sphere;
 DROP PROCEDURE IF EXISTS signUp_user;
 
 DELIMITER $$
-CREATE PROCEDURE `signUp_user`(
+CREATE PROCEDURE `register_user`(
     IN username_val VARCHAR(50),
     IN email_val VARCHAR(100),
+    IN first_name_val VARCHAR(20),
+    IN last_name_val VARCHAR(20),
+    IN icon_val VARCHAR(100),
     IN password_val VARCHAR(255)
 )
 BEGIN
@@ -25,8 +29,8 @@ DECLARE EXIT HANDLER FOR SQLEXCEPTION
 		SIGNAL SQLSTATE '45000'; 
 	END IF;
    -- Insert the new user
-    INSERT INTO users (username, email, password) 
-    VALUES (username_val, email_val, password_val);
+    INSERT INTO users (username, email, first_name, last_name, icon, password) 
+    VALUES (username_val, email_val, first_name_val, last_name_val, icon_val, password_val);
  
     -- Return the created user data
     SET user_id = LAST_INSERT_ID();
@@ -39,12 +43,6 @@ DECLARE EXIT HANDLER FOR SQLEXCEPTION
     
     IF NOT EXISTS (SELECT 1 FROM user_roles WHERE user_id=user_id) THEN
 		SET custom_message='Failed to insert data into user_roles table';
-    END IF;
-    
-    INSERT INTO otpRecord(user_id) VALUE (user_id);
-    
-    IF NOT EXISTS (SELECT 1 FROM otpRecord WHERE user_id=user_id) THEN
-		SET custom_message='Failed to insert data into otpRecord table';
     END IF;
     
 END$$

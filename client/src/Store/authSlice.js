@@ -5,15 +5,23 @@ const authSlice = createSlice({
     name: 'auth',
     initialState: {
         user_id: null,
-        name: null,
+        username: null,
+        firstname: null,
         icon: null,
         rolename: null,
     },
+    
     reducers: {
         setUserId: (state, action) => ({...state, user_id: action.payload.user_id}),
-        setUserName: (state, action)=> ({...state, name: action.payload.username}),
-        setUserIcon: (state, action)=> ({...state, icon: action.payload.icon}),
-        setRolename: (state, action)=> ({...state, rolename: action.payload.rolename}),
+
+        setUserData: (state, action) => ({
+            ...state,
+            user_id: action.payload.user_id,
+            username: action.payload.username,
+            firstname: action.payload.firstname,
+            icon: action.payload.icon,
+            rolename: action.payload.rolename
+        }),
         
         clearUser: (state) => {
             state.user_id = null;
@@ -25,5 +33,5 @@ const authSlice = createSlice({
 });
 
 // Export the slice itself (named export)
-export const { setUserId, setUserName, setUserIcon, setRolename, clearUser } = authSlice.actions;
+export const { setUserId, setUserData, clearUser } = authSlice.actions;
 export default authSlice.reducer; // Use default export for the reducer

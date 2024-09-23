@@ -1,56 +1,48 @@
 const db=require('../config/db');
 const bcrypt=require('bcrypt');
 const {generateOtp}=require('../utils/otpService');
-const {generateTokenAndSetCookie}=require('../utils/generateToken');
 
 const signInUser=async(user_id, password)=>{
     let response={
-        isSuccessful: false,
-        otp: null,
-        errorMessage: null,
+        success: false
     }
 
     try {
-        // convert this into single stored procedure
         const otp=generateOtp();
 
-        const [data]=await db.query(`CALL get_user_data_by_id(?)`,[user_id]);
+        const [data]=await db.query(`CALL get_password(?)`,[user_id]);
 
         if(data.length===0){
-            response.errorMessage='Invalid username or password';
+            response.message='Invalid username or password';
             return response;
         }
 
         const isMatch = await bcrypt.compare(password, data[0][0].password);
 
-        console.log(isMatch)
         if(!isMatch){
-            // response.errorCode=400,
-            // response.errorMessage='Invalid username or password';
-            // return response;
-            response.message("invalid username or password")
+            response.message("invalid username or password");
+            return response;
         }
 
         const [result]=await db.query(`CALL post_otp(?,?)`,[user_id, otp]);
 
         if(result.affectedRows===0){
-            response.errorMessage='Failed to generate otp'
+            response.message='Failed to generate otp'
             return response;
         }
 
         console.log(`OTP Generated : ${otp}`);
-        response.isSuccessful=true;
+        response.success=true;
         response.otp=otp;
-
     } catch (error) {
         if(error.code==='ER_SIGNAL_EXCEPTION'){
-            response.errorMessage=error.sqlMessage||'An error occurred in finding user data in database.';
+            response.message=error.sqlMessage||'An error occurred in finding user data in database.';
         } else {
-            response.errorMessage=error.message|| 'unexpected error during finding user data at logic.';
+            response.message=error.message|| 'unexpected error during finding user data at logic.';
         }
+    } finally {
+        return response;
     }
-
-    return response;
 }
 
 const verifyOTP=async(user_id,otp)=>{
@@ -80,7 +72,8 @@ const verifyOTP=async(user_id,otp)=>{
             response.statusCode=400;
             return response;
         }
-        const [logIn] = await db.execute(`CALL set_user_loggedIn(?)`,[user_id]);
+
+        const [logIn] = await db.execute(`CALL login_user(?)`,[user_id]);
 
         if(logIn.affectedRows<0){
             response.errorMessage='cant log in user';
@@ -88,10 +81,14 @@ const verifyOTP=async(user_id,otp)=>{
         }
 
         // generateTokenAndSetCookie(user_id, res);
-        response.data=logIn[0];
         response.success=true;
+        response.data=logIn[0];
     } catch (error) {
-        response.message=error.message;
+        if(error.code==='ER_SIGNAL_EXCEPTION'){
+            response.message=error.sqlMessage||'An error occurred in finding user data in database.';
+        } else {
+            response.message=error.message|| 'unexpected error during finding user data at logic.';
+        }
     }
     return response;
 }

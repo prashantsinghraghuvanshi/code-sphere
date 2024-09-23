@@ -7,7 +7,7 @@ import { useLogout } from "../../hooks/useLogout";
 import UserStats from "./UserStats";
 
 export default function Dashboard() {
-  const {user_id, name, rolename, icon}=useSelector((state)=>state.auth);
+  const {user_id, firstname, rolename, icon}=useSelector((state)=>state.auth);
   const {logout}=useLogout();
   const dispatch=useDispatch();
   const navigate=useNavigate();
@@ -32,7 +32,7 @@ export default function Dashboard() {
           src={icon} // Replace with actual profile image URL
           alt="Profile Picture"
         />
-        <h3 className="text-xl font-medium">hello {name} !</h3>
+        <h3 className="text-xl font-medium">hello {firstname} !</h3>
         <span className="text-gray-500">Current Status : {rolename?rolename:'user'}</span>
       </div>
       <UserStats />

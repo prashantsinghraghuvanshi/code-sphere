@@ -1,7 +1,7 @@
-DROP PROCEDURE IF EXISTS get_user_data_by_id;
+DROP PROCEDURE IF EXISTS get_password;
 
 DELIMITER $$
-CREATE PROCEDURE `get_user_data_by_id`(
+CREATE PROCEDURE `get_password`(
     IN userId_val INT
 )
 
@@ -20,7 +20,7 @@ DECLARE EXIT HANDLER FOR SQLEXCEPTION
     END IF;
     
     -- Get the user data
-    SELECT * FROM users WHERE user_id=userId_val;
+    SELECT users.password FROM users WHERE user_id=userId_val;
     
 END$$
 DELIMITER ;

@@ -4,14 +4,15 @@ const bcrypt=require('bcrypt');
 const signUpUser = async (body) => {
     let response = {
         success: false,
-        message: null,
-        errorMessage: null
+        message: null
     };
 
     try {
         const hashPassword = await bcrypt.hash(body.password, 8);
-        const iconTemplate='https://api.multiavatar.com/'+body.username+'.svg';
-        const [result] = await db.execute(`CALL signUp_user(?,?,?,?)`, [body.username, body.email, hashPassword, iconTemplate]);
+        const iconTemplate='https://api.multiavatar.com/'+body.firstName+'.svg';
+
+        const [result] = await db.execute(`CALL register_user(?,?,?,?,?,?)`, 
+            [body.username, body.email, body.firstName, body.lastName, iconTemplate, hashPassword]);
 
         if (result.affectedRows>0) {
             response.success = true;

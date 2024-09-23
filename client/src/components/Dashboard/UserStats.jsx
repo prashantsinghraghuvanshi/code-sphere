@@ -2,7 +2,7 @@ import { useGetUserStats } from './../../hooks/useGetUserStats';
 import { useSelector } from 'react-redux';
 
 export default function UserStats() {
-    const authState = useSelector((state) => state.auth); // Log the entire auth state
+    const authState = useSelector((state) => state.auth); 
     const { user_id } = authState;
     
     // console.log(user_id); 

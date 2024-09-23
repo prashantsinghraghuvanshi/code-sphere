@@ -16,15 +16,11 @@ DECLARE EXIT HANDLER FOR SQLEXCEPTION
 	END;
     
     IF NOT EXISTS (SELECT 1 FROM otpRecord WHERE user_id=userId_val) THEN
-		INSERT INTO otpRecord(userId) VALUES(userId_val);
+		  INSERT INTO otpRecord(user_id, otp) VALUES(userId_val, otp_val);
     END IF;
     
    -- Insert the otp
     UPDATE otpRecord SET otp=otp_val WHERE user_id=userId_val;
     
-    IF ROW_COUNT()<1 THEN
-		SET custom_message='Error in posting otp in table';
-	END IF;
-    
-END$$
+END $$
 DELIMITER ;

@@ -3,10 +3,11 @@ const userModel=require('../models/userModel');
 
 const signUp=async(req, res)=>{
     try {
-        const {username, email, password}=req.body;
-        if(!email || !username || !password){
+        const {username, email, firstName, lastName, password}=req.body;
+        if(!email || !username || !password || !firstName || !lastName){
             return res.status(400).json({error:'missing required fields in request'})
         }
+
         const emailIsValid=validator.validate(email);
         if(!emailIsValid){
             return res.status(400).json({error:'email is not valid'})
@@ -15,7 +16,7 @@ const signUp=async(req, res)=>{
         const signUpUser=await userModel.signUpUser(req.body);
         
         if(!signUpUser.success){
-            return res.status(400).json({error: signUpUser.message})
+            return res.status(400).json({error: signUpUser.message});
         }
 
         return res.status(201).json({message:'user created successfully'});

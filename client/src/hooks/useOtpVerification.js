@@ -12,9 +12,8 @@ export const useOtpVerification=()=>{
         setLoading(true);
 
         try {
-            const result=await axios.post('http://localhost:5001/api/auth/verifyOtp', {
-                user_id,
-                otp
+            const result=await axios.get('http://localhost:5001/api/auth/verifyOtp', {
+              params: { user_id: user_id, otp: otp }
             });
             console.log(result);
 

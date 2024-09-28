@@ -7,8 +7,8 @@ import { usePostSolution } from "../../hooks/usePostSolution";     // Custom hoo
 
 export default function SolutionBox({ queryId }) {
   const { user_id } = useSelector((state) => state.auth);  // Get logged-in user's ID from Redux
-  const { solutions: fetchedSolutions, loading: fetchLoading } = useFetchSolutions(queryId);  // Fetch existing solutions using custom hook
-  const { postSolution, loading: postLoading, solutions: newSolutions } = usePostSolution();  // Post a new solution using custom hook
+  const { solutions: fetchedSolutions = [], loading: fetchLoading } = useFetchSolutions(queryId);  // Fetch existing solutions using custom hook
+  const { postSolution, loading: postLoading, solutions: newSolutions = [] } = usePostSolution();  // Post a new solution using custom hook
   const [solutions, setSolutions] = useState([]);  // Local state to manage all solutions (fetched + new)
   const [newComment, setNewComment] = useState("");
 
@@ -26,11 +26,15 @@ export default function SolutionBox({ queryId }) {
     }
   }, [newSolutions]);
 
-  const handleCommentSubmit = (e) => {
+  const handleCommentSubmit = async (e) => {
     e.preventDefault();
     if (newComment.trim() !== "") {
-      // Post the new solution to the backend
-      postSolution(queryId, newComment, user_id);
+      // Post the new solution to the backend and get the response
+      const postedSolution = await postSolution(queryId, newComment, user_id);
+
+      // Optimistically update the local solutions state with the new solution
+      setSolutions([...solutions, postedSolution]);
+
       setNewComment("");  // Clear the input field after submission
     }
   };
@@ -44,12 +48,14 @@ export default function SolutionBox({ queryId }) {
           <ul>
             {solutions.length > 0 ? (
               solutions.map((solution, index) => (
-                <li key={index} className="mb-2">
-                  <p className="text-gray-700">{solution.content}</p>
-                  <p className="text-gray-500">
-                    By {solution.username || "Anonymous"} - {moment(solution.updated_at).format('MMMM Do YYYY, h:mm:ss a')};
-                  </p>
-                </li>
+                solution && solution.content ? ( // Add this check to ensure solution is valid
+                  <li key={index} className="mb-2">
+                    <p className="text-gray-700">{solution.content}</p>
+                    <p className="text-gray-500">
+                      By {solution.username || "Anonymous"} - {moment(solution.updated_at).format('MMMM Do YYYY, h:mm:ss a')};
+                    </p>
+                  </li>
+                ) : null
               ))
             ) : (
               <p>No solutions yet.</p>

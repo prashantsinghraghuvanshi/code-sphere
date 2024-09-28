@@ -5,13 +5,15 @@ import axios from "axios";
 export const useRegister = () => {
   const [loading, setLoading] = useState(false);
 
-  const register = async (username, email, password) => {
+  const register = async (username, email,firstName, lastName, password) => {
     setLoading(true);
 
     try {
       const response = await axios.post("http://localhost:5001/api/user/signUp", {
         username,
         email,
+        firstName,
+        lastName,
         password,
       });
 

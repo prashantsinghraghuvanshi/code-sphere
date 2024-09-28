@@ -26,6 +26,33 @@ const userByIdModel=async(userId)=>{
     return response;
 }
 
+const getQueriesById=async(userId)=>{
+    let response={
+        success: false
+    }
+
+    try {
+        const [result]=await db.query('CALL get_queries_by_userId(?)',[userId]);
+
+        if(result.length===0){
+            response.errorMessage='Unable to fetch user queries data.';
+            return response;
+        }
+
+        response.success=true;
+        response.message="user queries fetched successfully";
+        response.data=result[0];
+    } catch (error) {
+        if(error.code==='ER_SIGNAL_EXCEPTION'){
+            response.errorMessage=error.sqlMessage || 'An error occured at query handling';
+        } else {
+            response.errorMessage=error.message || 'unexpected error occured at server side';
+        }
+    } finally {
+        return response;
+    }
+}
+
 const getQueries=async()=>{
     let response={
         success: false,
@@ -88,7 +115,7 @@ const getSolutionModel=async(query_id)=>{
     }
 
     try {
-        const [result]=await db.query(`CALL get_solutions_by_queryID(?)`,[query_id]);
+        const [result]=await db.query(`CALL get_solutions(?)`,[query_id]);
 
         if(result.length===0){
             response.message='unable to fetch solutions from database';
@@ -113,5 +140,6 @@ module.exports={
     userByIdModel,
     getQueries,
     getStats,
-    getSolutionModel
+    getSolutionModel,
+    getQueriesById
 }

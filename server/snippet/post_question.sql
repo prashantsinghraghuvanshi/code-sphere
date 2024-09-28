@@ -1,3 +1,5 @@
+use code_sphere;
+
 DROP PROCEDURE IF EXISTS post_question;
 
 DELIMITER $$
@@ -16,20 +18,20 @@ DECLARE EXIT HANDLER FOR SQLEXCEPTION
 		END IF;
 		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = custom_message;            
 	END;
-    IF EXISTS (SELECT 1 FROM queries WHERE title = title_val) THEN
-		IF EXISTS (SELECT 1 FROM queries WHERE content = content_val) THEN
+    IF EXISTS (SELECT 1 FROM questions WHERE title = title_val) THEN
+		IF EXISTS (SELECT 1 FROM questions WHERE content = content_val) THEN
 			SET custom_message = 'Duplicate question';
 			SIGNAL SQLSTATE '45000'; 
 		END IF; 
 	END IF;
     
-   -- Insert the question
-    INSERT INTO queries (title, content, created_by) 
+   -- Insert the question table
+    INSERT INTO questions (title, content, created_by) 
     VALUES (title_val, content_val, userId_val);
     
     SET queryId=LAST_INSERT_ID();
     
-    IF NOT EXISTS (SELECT 1 FROM queries WHERE query_id=queryId) THEN
+    IF NOT EXISTS (SELECT 1 FROM questions WHERE query_id=queryId) THEN
 		SET custom_message='Failed to insert data into queries table';
     END IF;
     

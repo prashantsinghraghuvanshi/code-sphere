@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-// Create a slice for user authorization state
 const authSlice = createSlice({
     name: 'auth',
     initialState: {
@@ -9,6 +8,7 @@ const authSlice = createSlice({
         firstname: null,
         icon: null,
         rolename: null,
+        postContainer: 0, // 0 = questions, 1 = posts, 2 = answers
     },
     
     reducers: {
@@ -25,13 +25,19 @@ const authSlice = createSlice({
         
         clearUser: (state) => {
             state.user_id = null;
-            state.name=null;
+            state.username = null;
+            state.firstname = null;
+            state.icon = null;
             state.rolename = null;
-            state.icon=null;
+            state.postContainer = 0; // Reset to default on logout
+        },
+
+        setPostContainer: (state, action) => {
+            state.postContainer = action.payload; // payload will be 0, 1, or 2
         },
     },
 });
 
-// Export the slice itself (named export)
-export const { setUserId, setUserData, clearUser } = authSlice.actions;
-export default authSlice.reducer; // Use default export for the reducer
+// Export the slice actions and reducer
+export const { setUserId, setUserData, clearUser, setPostContainer } = authSlice.actions;
+export default authSlice.reducer;

@@ -1,18 +1,21 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
 
-export const useGetQueries = () => {
+export const useGetQueriesById = (userId) => {
   const [queries, setQueries] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const getAllQueries = async () => {
+    const getQueriesById = async () => {
       setLoading(true);
 
       try {
         const result = await axios.get(
-          "http://localhost:5001/api/data/queries"
+          "http://localhost:5001/api/data/queryById",
+          {
+            params: { userId: userId },
+          }
         );
         const data = result.data.data;
         setQueries(Array.isArray(data) ? data : []);
@@ -41,8 +44,11 @@ export const useGetQueries = () => {
       }
     };
 
-    getAllQueries();
-  }, []); // Add empty array to ensure this runs only once (on mount)
+    if (userId) {
+      getQueriesById(); // Only fetch when userId is provided
+    }
+    
+  }, [userId]); // Add userId as a dependency to refetch when it changes
 
   return { queries, loading };
 };

@@ -100,7 +100,7 @@ const signOutUser=async(user_id)=>{
     }
 
     try {
-        const [result]=await db.execute(`CALL set_user_loggedIn(?)`,[user_id])
+        const [result]=await db.execute(`CALL logout_user(?)`,[user_id])
 
         if(result.length===0){
             response.message='cant logout user';

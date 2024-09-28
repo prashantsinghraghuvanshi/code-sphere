@@ -1,5 +1,8 @@
 DELIMITER $$
-CREATE PROCEDURE `get_all_queries`()
+CREATE PROCEDURE `get_queries_by_userId`(
+	IN userId_val INT
+)
+
 BEGIN
 DECLARE custom_message VARCHAR(255);
 DECLARE EXIT HANDLER FOR SQLEXCEPTION
@@ -14,7 +17,8 @@ DECLARE EXIT HANDLER FOR SQLEXCEPTION
     SELECT questions.*, users.username, users.icon
     FROM questions
     LEFT JOIN users
-    ON questions.created_by=users.user_id;
-    
+    ON questions.created_by=users.user_id
+    WHERE questions.created_by=userId_val;
+
 END$$
 DELIMITER ;

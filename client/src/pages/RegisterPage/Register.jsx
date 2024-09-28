@@ -5,6 +5,8 @@ import { useRegister } from "../../hooks/useRegister";
 const Register = () => {
   const [username, setUsername]=useState("");
   const [email, setEmail]=useState("");
+  const [firstname, setFirstname]=useState("");
+  const [lastname, setLastname]=useState("");
   const [password, setPassword]=useState("");
   const navigate = useNavigate();
 
@@ -12,7 +14,7 @@ const Register = () => {
 
   const handleSubmit=async(e)=>{
     e.preventDefault();
-    const result=await register(username, email, password);
+    const result=await register(username, email, firstname, lastname, password);
 
     if (result.status === 201) {
       navigate('/');
@@ -39,6 +41,18 @@ const Register = () => {
             type="text"
             placeholder="Email Address"
             onChange={(e)=>setEmail(e.target.value)}
+          />
+          <input
+            className="text-sm w-full mb-5 mt-5 px-4 py-2 border border-solid border-gray-300 rounded"
+            type="text"
+            placeholder="First name"
+            onChange={(e)=>setFirstname(e.target.value)}
+          />
+          <input
+            className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded"
+            type="text"
+            placeholder="Last name"
+            onChange={(e)=>setLastname(e.target.value)}
           />
           <input
             className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded mt-4"

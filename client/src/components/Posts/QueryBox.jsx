@@ -12,7 +12,7 @@ export default function QueryBox({ username, queryId, icon, updatedAt, title, co
   };
 
   return (
-    <div className="bg-white rounded-lg p-4 shadow-md">
+    <div className="bg-white rounded-lg p-4 shadow-xl border border-gray-200">
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center">
           <img

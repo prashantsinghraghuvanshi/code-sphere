@@ -16,13 +16,15 @@ const Login = () => {
     const result=await otpVerification(user_id, otp);
     if (result.status === 200) {
       dispatch(setUserData({ 
-        user_id : result.data.data[0].icon,
+        user_id : result.data.data[0].user_id,
         username: result.data.data[0].username,
-        firstname: result.data.data[0].firstname,
+        firstname: result.data.data[0].first_name,
         icon: result.data.data[0].icon,
-        rolename: result.data.data[0].icon
+        rolename: result.data.data[0].role_name
       }));
+
       navigate('/home');
+      
     } else {
       alert('OTP verification failed. Please try again.');
     }

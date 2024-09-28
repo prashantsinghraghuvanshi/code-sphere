@@ -16,7 +16,9 @@ export default function Buttons() {
     const result = await logout(user_id);
 
     if (result.data.success) {
+      // removing user data from REDUX and session storage
       dispatch(clearUser());
+      sessionStorage.clear();
       navigate("/login");
     } else {
       toast.error("Login failed. Please try again.");

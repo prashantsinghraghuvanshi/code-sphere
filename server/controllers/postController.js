@@ -13,11 +13,11 @@ const postQuestion=async(req, res)=>{
         }
 
         const data=await postModel.postQues(title, content, user_id);
-        if(!data.isSuccessful){
+        if(!data.success){
             return res.status(500).json({error:"failed to post question"});
         }
 
-        return res.status(201).json({message: "question posted"});
+        return res.status(201).json({data});
     } catch (error) {
         return res.status(500).json({error: error.message})
     }

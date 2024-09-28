@@ -16,6 +16,7 @@ const Navbar = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     document.body.classList.remove('overflow-hidden');
+    
   };
 
   return (

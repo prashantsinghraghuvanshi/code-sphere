@@ -14,7 +14,7 @@ export default function Dashboard() {
           alt="Profile Picture"
         />
         <h3 className="text-xl font-medium">hello {firstname} !</h3>
-        <span className="mt-3 p-1 text-black bg-lime-300 rounded-md">Current Status : {rolename?rolename:'user'}</span>
+        <span className="mt-3 p-1 text-black bg-lime-300 rounded-md">Current Status : {rolename}</span>
       </div>
       <UserStats />
       <Buttons />

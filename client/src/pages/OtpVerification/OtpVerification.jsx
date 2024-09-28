@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { useOtpVerification } from "../../hooks/useOtpVerification";
 import { useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { setUserData } from '../../Store/authSlice';
+import { useSelector } from "react-redux";
 
 const Login = () => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const [otp, setOtp]=useState("");
   const navigate=useNavigate();
   const {user_id}=useSelector((state)=>state.auth);
@@ -15,13 +14,15 @@ const Login = () => {
     e.preventDefault();
     const result=await otpVerification(user_id, otp);
     if (result.status === 200) {
-      dispatch(setUserData({ 
-        user_id : result.data.data[0].user_id,
+      // storing user data into session storage
+      const user={
+        user_id: result.data.data[0].user_id,
         username: result.data.data[0].username,
         firstname: result.data.data[0].first_name,
         icon: result.data.data[0].icon,
-        rolename: result.data.data[0].role_name
-      }));
+        rolename: result.data.data[0].role_name,
+      }
+      sessionStorage.setItem('user', JSON.stringify(user));
 
       navigate('/home');
       

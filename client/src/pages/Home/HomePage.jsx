@@ -1,8 +1,20 @@
 import Dashboard from "../../components/Dashboard/Dashboard";
 import Navbar from "../../components/Navbar";
 import PostContainer from "../../components/Posts/PostContainer";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../../Store/authSlice";
 
 const AppLayout = () => {
+  const dispatch=useDispatch();
+  const data=JSON.parse(sessionStorage.getItem('user'));
+  dispatch(setUserData({ 
+        user_id : data.user_id,
+        username: data.username,
+        firstname: data.firstname,
+        icon: data.icon,
+        rolename: data.rolename
+  }));
+
   return (
     <>
       <Navbar />

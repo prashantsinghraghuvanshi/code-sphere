@@ -2,15 +2,16 @@ const db=require('../config/db');
 
 const postQues=async(title, content, user_id)=>{
     let response={
-        isSuccessful: false
+        success: false
     }
 
     try {
         const [result]=await db.query('CALL post_question(?,?,?)',[title, content, user_id]);
 
-        if(result.affectedRows>0){
-            response.isSuccessful=true;
+        if(result.length>0){
+            response.success=true;
             response.message='query posted successfully';
+            response.data=result[0][0];
         }
 
     } catch (error) {
@@ -19,9 +20,9 @@ const postQues=async(title, content, user_id)=>{
         } else {
             response.errorMessage = error.message || 'Unexpected error during posting question.';
         }
+    } finally {
+        return response;
     }
-
-    return response;
 }
 
 const postSol=async(query_id, content, user_id)=>{

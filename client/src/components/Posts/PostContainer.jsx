@@ -3,13 +3,14 @@ import QueryBox from "./QueryBox";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useGetQueriesById } from "../../hooks/useGetQueriesById"; // Assuming this is your hook
+import ChatBot from "../ChatBot/ChatBot";
 
 export default function PostContainer() {
   const [displayedQueries, setDisplayedQueries] = useState([]);
+  const { user_id, firstname}=useSelector((state)=>state.auth);
 
   const { queries: allQueries = [], loading: dataLoading } = useGetQueries(); // Fetch all queries
-  const userId = useSelector((state) => state.auth.user_id); // Assuming userId comes from Redux state
-  const { queries: userQueries = [], loading: userLoading } = useGetQueriesById(userId); // Fetch user's specific queries
+  const { queries: userQueries = [], loading: userLoading } = useGetQueriesById(user_id); // Fetch user's specific queries
 
   const postContainer = useSelector((state) => state.auth.postContainer);
 
@@ -31,7 +32,15 @@ export default function PostContainer() {
 
   return (
     <div className="flex flex-col">
-      <h2 className="text-2xl font-bold mb-2">Posts</h2>
+      <h2 className="text-2xl font-bold mb-2">
+        {postContainer===0 && "Global Queries"}
+        {postContainer===1 && `${firstname}'s Queries `}
+        {postContainer===2 && <>
+          <span>Ask your doubts from AI</span>
+          <ChatBot />
+          </>
+        }
+      </h2>
 
       <div className="space-y-4 justify-center items-center">
         {/* Displaying queries conditionally */}

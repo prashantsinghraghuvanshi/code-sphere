@@ -1,4 +1,6 @@
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { useLogout } from "../../hooks/useLogout";
 import { useDispatch } from "react-redux";
 import { clearUser, setPostContainer } from "../../Store/authSlice";
@@ -6,7 +8,9 @@ import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 
 export default function Buttons() {
-  const { user_id, rolename, postContainer } = useSelector((state) => state.auth);
+  const { user_id, rolename, postContainer } = useSelector(
+    (state) => state.auth
+  );
   const { logout } = useLogout();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -36,16 +40,20 @@ export default function Buttons() {
 
   const handleFetchUserQueries = (e) => {
     e.preventDefault();
-    {postContainer===0?dispatch(setPostContainer(1)):dispatch(setPostContainer(0))};
+    {
+      postContainer === 0
+        ? dispatch(setPostContainer(1))
+        : dispatch(setPostContainer(0));
+    }
   };
 
   return (
-    <div className="flex flex-col space-y-4">
+    <div className="flex flex-col space-y-2">
       <button
         onClick={handleFetchUserQueries}
         className="mt-4 py-2 px-2 bg-teal-400 text-white rounded-md hover:bg-teal-500 focus:outline-none"
       >
-        {postContainer===0?"View your queries":"View all queries"}
+        {postContainer === 0 ? "View your queries" : "View all queries"}
       </button>
       <button
         onClick={handleStatusChangeRequest}
@@ -55,9 +63,10 @@ export default function Buttons() {
       </button>
       <button
         onClick={handleLogout}
-        className="py-2 px-2 bg-blue-500 text-white rounded-md hover:bg-blue-900 focus:outline-none"
+        className="py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-900 focus:outline-none flex justify-between items-center w-full"
       >
-        Logout
+        <span className="flex-grow text-center">Logout</span>
+        <FontAwesomeIcon icon={faRightFromBracket} className="ml-1" />
       </button>
     </div>
   );

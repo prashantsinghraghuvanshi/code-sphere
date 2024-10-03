@@ -1,6 +1,6 @@
 import Dashboard from "../../components/Dashboard/Dashboard";
 import Navbar from "../../components/Navbar";
-import PostContainer from "../../components/Posts/PostContainer";
+import PostContainer from "../../components/Post/PostContainer";
 import { useDispatch } from "react-redux";
 import { setUserData } from "../../Store/authSlice";
 

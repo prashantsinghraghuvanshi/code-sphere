@@ -33,14 +33,13 @@ const Navbar = () => {
           {/* Home icon */}
           <FontAwesomeIcon icon={faHome} className="h-6 w-6 ml-4 mr-5" />
           <h1 className="text-xl font-bold mr-16">Code Sphere</h1>
-          {/* Answer icon */}
-          <div className="flex items-center p-2 border rounded-lg border-teal-300 hover:bg-red-400 cursor-pointer">
+          {/* AI icon */}
+          <div onClick={handleClickBot} className="flex items-center p-2 border rounded-lg border-teal-300 hover:bg-red-400 cursor-pointer">
             <span className="text-lg font-medium">Ask AI</span>
             <FontAwesomeIcon
               icon={faRobot}
               size="4x"
               className="h-6 w-6 ml-4"
-              onClick={handleClickBot}
             />
           </div>
         </div>

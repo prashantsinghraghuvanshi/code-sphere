@@ -1,22 +1,11 @@
-const mysql=require('mysql2/promise');
-const connection=mysql.createPool({
-    port: process.env.sqlPORT,
-    host: process.env.sqlHOST,
-    user: process.env.sqlUSER,
-    password: process.env.sqlPASS,
-    database: process.env.sqlDB,
-    waitForConnections: true,
-    connectionLimit: process.env.connectionLimit,
-    queueLimit: 0
+// connection to postGreSQL using neonDB
+
+const { Client } = require("pg");
+
+const client = new Client({
+  connectionString:`postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/${process.env.DB_NAME}?sslmode=${process.env.DB_SSL_MODE}`
 })
 
-connection.getConnection((error, connection)=>{
-    if(error){
-        console.log(internalServerError.message);
-        return error.message;
-    }
+client.connect();
 
-    if(connection)  connection.release();
-});
-
-module.exports=connection;
+module.exports=client;

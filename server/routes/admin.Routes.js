@@ -3,6 +3,10 @@ const router=express.Router();
 const {updateRole}=require('../controllers/adminController');
 const {protectRoute}=require('../middlewares/protectRoutes');
 
-router.post('/updateRole', protectRoute, updateRole)
+// testing
+router.post('/updateRole', updateRole)
+
+// deployment 
+// router.post('/updateRole', protectRoute, updateRole);
 
 module.exports=router;

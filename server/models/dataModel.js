@@ -6,7 +6,7 @@ const userByIdModel=async(userId)=>{
     }
 
     try {
-        const [result]=await db.query('CALL get_user_data_by_id(?)',[userId]);
+        const [result]=await db.query('CALL get_user_data_by_id($1)',[userId]);
 
         if(result.length===0){
             response.errorMessage='unable to fetch user data';

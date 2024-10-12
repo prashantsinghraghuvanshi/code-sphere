@@ -1,5 +1,5 @@
-const db=require('../config/db');
-const bcrypt=require('bcrypt');
+const db = require('../config/db');
+const bcrypt = require('bcrypt');
 
 const signUpUser = async (body) => {
     let response = {
@@ -9,53 +9,51 @@ const signUpUser = async (body) => {
 
     try {
         const hashPassword = await bcrypt.hash(body.password, 8);
-        const iconTemplate='https://api.multiavatar.com/'+body.firstName+'.svg';
+        const iconTemplate = 'https://api.multiavatar.com/' + body.username + '.svg';
 
-        const [result] = await db.execute(`CALL register_user(?,?,?,?,?,?)`, 
-            [body.username, body.email, body.firstName, body.lastName, iconTemplate, hashPassword]);
+        const {rows} = await db.query(
+            `SELECT * FROM register_user($1, $2, $3, $4, $5, $6)`, 
+            [body.username, body.email, body.firstName, body.lastName, iconTemplate, hashPassword]
+        );
 
-        if (result.affectedRows>0) {
+        if (rows.length > 0) {
             response.success = true;
             response.message = "User added successfully";
         } else {
-            response.message = 'Duplicate Data';
+            response.message = rows[0].error || 'Duplicate Data';
         }
 
     } catch (error) {
-        if (error.code === 'ER_SIGNAL_EXCEPTION') {
-            response.message = error.sqlMessage || 'An error occurred in the sign-up process(database)';
-        } else {
-            response.message = error.message || 'Unexpected error during sign-up.';
-        }
+        response.message = error.message || 'Unexpected error during sign-up.';
+    } finally {
+        return response;
     }
-    
-    return response;
 };
 
-const findById=async(user_id)=>{
-    let response={
+
+
+const findById = async (user_id) => {
+    let response = {
         success: false
-    }
+    };
+
     try {
-        const [result]=await db.execute(`CALL find_role_by_userId(?)`,[user_id]);
-
-        const rolename=result[0][0].role_name;
-
-        if(!rolename){
-            response.errorMessage='Error in stored procedure for findById';
+        // Use `SELECT` for stored procedures in PostgreSQL
+        const { rows: result } = await db.query(`SELECT find_role_by_userId($1)`, [user_id]);
+        const rolename = result[0]?.role_name;
+        if (!rolename) {
+            response.message = 'Error in stored procedure for findById';
+            return response;
         }
-        
-        response.success=true;
-        response.rolename=rolename;
+        response.success = true;
+        response.rolename = rolename;
     } catch (error) {
-        if(error.code==='ER_SIGNAL_EXCEPTION'){
-            response.errorMessage=error.sqlMessage||'An error occurred in finding user data.';
-        } else {
-            response.errorMessage=error.message|| 'unexpected error during finding user data.';
-        }
-    }
-    return response;
-}
+        response.message = error.message || 'Unexpected error during finding user data.';
+    } finally {
+        return response;
+    }  
+};
+
 
 module.exports={
     signUpUser,
